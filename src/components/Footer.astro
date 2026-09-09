@@ -1,0 +1,35 @@
+---
+import { site } from "../data/site";
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line py-10">
+  <div class="container-site flex flex-wrap items-center justify-between gap-4">
+    <p class="text-sm text-text-muted">
+      © {year} <span class="text-text-primary font-medium">HaloAfid</span> —
+      Digital studio. Indonesia.
+    </p>
+    <div class="flex items-center gap-6 text-sm">
+      <a
+        href={site.whatsapp}
+        target="_blank"
+        rel="noopener"
+        class="text-text-secondary hover:text-electric transition-colors"
+      >
+        WhatsApp
+      </a>
+      <a
+        href={`mailto:${site.email}`}
+        class="text-text-secondary hover:text-electric transition-colors"
+      >
+        Email
+      </a>
+      <a
+        href={`https://${site.domain}`}
+        class="text-text-secondary hover:text-electric transition-colors"
+      >
+        {site.domain}
+      </a>
+    </div>
+  </div>
+</footer>

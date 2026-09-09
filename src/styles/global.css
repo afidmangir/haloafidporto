@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* ===== HaloAfid Design Tokens (DESIGN.md) ===== */
+@theme {
+  --color-ink: #070a10;
+  --color-surface: #0d111a;
+  --color-surface-elevated: #121824;
+  --color-text-primary: #f5f7fb;
+  --color-text-secondary: #a7b0c0;
+  --color-text-muted: #6f7888;
+  --color-line: #202838;
+  --color-electric: #2563ff;
+  --color-bright: #4d7cff;
+  --color-glow: #3b82f6;
+
+  --font-sans: "Inter Tight", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "DM Mono", ui-monospace, monospace;
+
+  --breakpoint-xs: 390px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+}
+
+/* ===== Base ===== */
+html {
+  scroll-behavior: auto;
+  background: var(--color-ink);
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-electric);
+  color: #fff;
+}
+
+/* Focus visibility */
+:focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ===== Typography utilities (editorial scale) ===== */
+.display-hero {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  font-size: clamp(3.2rem, 9vw, 8.5rem);
+  text-wrap: balance;
+}
+
+.display-section {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  font-size: clamp(2.4rem, 5.5vw, 6rem);
+  text-wrap: balance;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.body-large {
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Motion primitives ===== */
+[data-reveal] {
+  opacity: 0;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ===== Selection / misc ===== */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.container-site {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: clamp(18px, 4vw, 72px);
+}
+
+/* Hide horizontal scrollbar artifacts from pinned sections */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

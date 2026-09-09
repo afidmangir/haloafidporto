@@ -1,0 +1,50 @@
+---
+import { projects } from "../data/projects";
+---
+
+<section class="py-28 md:py-40 border-t border-line">
+  <div class="container-site">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-14">
+      <div>
+        <p class="kicker mb-4" data-reveal>ARCHIVE</p>
+        <h2 class="display-section text-text-primary" data-reveal>
+          More selected work.
+        </h2>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {
+        projects.map((project) => (
+          <article
+            class="group border border-line rounded-2xl bg-surface overflow-hidden hover:border-electric/40 transition-colors"
+            data-grid-card
+          >
+            <a href={project.image} class="block overflow-hidden" aria-label={`${project.title} — ${project.category}`}>
+              <img
+                src={project.image}
+                alt={project.title}
+                width="800"
+                height="600"
+                loading="lazy"
+                class="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+            </a>
+            <div class="p-6">
+              <p class="kicker mb-2">{project.category}</p>
+              <h3 class="text-lg font-semibold tracking-tight mb-1 group-hover:text-electric transition-colors">
+                {project.title}
+              </h3>
+              <p class="text-sm text-text-secondary line-clamp-2">
+                {project.description}
+              </p>
+              {project.status === "placeholder" && (
+                <p class="kicker !text-text-muted mt-3">sample project</p>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

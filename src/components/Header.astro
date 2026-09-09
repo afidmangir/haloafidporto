@@ -1,0 +1,86 @@
+---
+import { site, nav } from "../data/site";
+---
+
+<header class="fixed top-0 inset-x-0 z-50" data-header>
+  <div class="container-site">
+    <nav
+      class="flex items-center justify-between pt-5 pb-4 transition-all duration-300"
+      aria-label="Navigasi utama"
+    >
+      <a
+        href="#top"
+        class="font-semibold text-[1.05rem] tracking-tight hover:text-electric transition-colors"
+        aria-label="HaloAfid — kembali ke atas"
+      >
+        haloafid<span class="text-electric">.</span>
+      </a>
+
+      <!-- Desktop -->
+      <div class="hidden md:flex items-center gap-8 text-sm text-text-secondary font-medium">
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              class="hover:text-text-primary transition-colors"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          href={site.whatsapp}
+          target="_blank"
+          rel="noopener"
+          class="ml-2 px-5 py-2.5 rounded-full bg-electric text-white text-sm font-semibold hover:bg-bright transition-colors"
+        >
+          Let's build something →
+        </a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button
+        class="md:hidden relative w-10 h-10 grid place-items-center text-text-primary"
+        data-menu-toggle
+        aria-label="Buka menu navigasi"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="block w-6 h-[1.5px] bg-current transition-transform" data-menu-line-1></span>
+        <span class="block w-6 h-[1.5px] bg-current mt-1.5 transition-transform" data-menu-line-2></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile full-screen menu -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 bg-ink hidden md:hidden"
+  data-mobile-menu
+  aria-hidden="true"
+>
+  <div class="container-site h-full flex flex-col justify-center gap-6 pt-24">
+    {
+      nav.map((item, i) => (
+        <a
+          href={item.href}
+          class="text-4xl font-semibold tracking-tight text-text-primary hover:text-electric transition-colors"
+          data-menu-link
+        >
+          <span class="kicker mr-3">{String(i + 1).padStart(2, "0")}</span>
+          {item.label}
+        </a>
+      ))
+    }
+    <a
+      href={site.whatsapp}
+      target="_blank"
+      rel="noopener"
+      class="mt-8 inline-flex w-fit px-7 py-3.5 rounded-full bg-electric text-white font-semibold"
+      data-menu-link
+    >
+      Let's build something →
+    </a>
+  </div>
+</div>

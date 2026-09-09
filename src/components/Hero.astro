@@ -1,0 +1,73 @@
+---
+import { site } from "../data/site";
+
+const services = ["WEBSITE", "SISTEM INFORMASI", "SEO & GEO", "AI"];
+---
+
+<section id="top" class="relative min-h-screen flex items-center pt-28 pb-20 overflow-hidden">
+  <!-- Abstract blue orbital/grid background -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div
+      class="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[120vmax] h-[120vmax] rounded-full"
+      style="background: radial-gradient(circle at center, rgba(37,99,255,0.10) 0%, transparent 55%);"
+    ></div>
+    <div
+      class="absolute inset-0 opacity-[0.35]"
+      style="background-image: linear-gradient(rgba(245,247,251,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,247,251,0.04) 1px, transparent 1px); background-size: 80px 80px;"
+    ></div>
+  </div>
+
+  <div class="container-site relative">
+    <p class="kicker mb-6" data-reveal>
+      HALOAFID / DIGITAL STUDIO
+    </p>
+
+    <h1 class="display-hero text-text-primary" data-hero-lines>
+      WE BUILD
+      <span class="block">DIGITAL</span>
+      <span class="block">
+        EXPERIENCES <span class="text-electric">THAT WORK.</span>
+      </span>
+    </h1>
+
+    <div class="mt-10 grid lg:grid-cols-12 gap-8 items-end" data-reveal>
+      <p class="body-large lg:col-span-6 max-w-xl">
+        Website, sistem informasi, SEO &amp; GEO, dan AI untuk bisnis yang ingin
+        tumbuh lebih cepat dan bekerja lebih rapi.
+      </p>
+      <div class="lg:col-span-6 flex flex-wrap gap-4 justify-start lg:justify-end">
+        <a
+          href="#work"
+          class="px-7 py-3.5 rounded-full bg-electric text-white font-semibold hover:bg-bright transition-colors"
+        >
+          Lihat karya
+        </a>
+        <a
+          href={site.whatsapp}
+          target="_blank"
+          rel="noopener"
+          class="px-7 py-3.5 rounded-full border border-line text-text-primary font-semibold hover:border-electric hover:text-electric transition-colors"
+        >
+          Diskusi via WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-24 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6" data-reveal>
+      <p class="kicker !text-text-secondary">
+        Based in Indonesia · Available for selected projects
+      </p>
+      <div class="flex flex-wrap gap-3">
+        {
+          services.map((s) => (
+            <span
+              class="kicker !text-text-muted border border-line rounded-full px-3.5 py-1.5"
+            >
+              {s}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

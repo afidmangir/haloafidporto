@@ -1,0 +1,82 @@
+{
+  "brand": {
+    "name": "HaloAfid",
+    "domain": "haloafid.site",
+    "phone": "082136006831",
+    "email": "haloafid@gmail.com",
+    "whatsapp": "https://wa.me/6282136006831"
+  },
+  "hero": {
+    "eyebrow": "HALOAFID / DIGITAL STUDIO",
+    "title": "WE BUILD DIGITAL EXPERIENCES THAT WORK.",
+    "description": "Website, sistem informasi, SEO & GEO, dan AI untuk bisnis yang ingin tumbuh lebih cepat dan bekerja lebih rapi.",
+    "primaryCta": "Lihat karya",
+    "secondaryCta": "Diskusi via WhatsApp"
+  },
+  "services": [
+    {
+      "id": "website",
+      "title": "WEBSITE",
+      "description": "Website cepat, responsif, terstruktur, dan dirancang untuk membantu brand terlihat lebih profesional sekaligus memudahkan orang mengambil tindakan."
+    },
+    {
+      "id": "systems",
+      "title": "SYSTEMS",
+      "description": "Aplikasi web dan sistem informasi untuk membuat proses kerja lebih teratur, data lebih mudah dikelola, dan pekerjaan berulang lebih sederhana."
+    },
+    {
+      "id": "search",
+      "title": "SEARCH",
+      "description": "Fondasi teknis, struktur konten, dan strategi entitas agar brand lebih mudah ditemukan di search engine maupun mesin jawaban berbasis AI."
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "description": "Integrasi AI yang fokus pada kebutuhan nyata—otomasi, assistant, content workflow, knowledge retrieval, dan pengalaman digital yang lebih cerdas."
+    }
+  ],
+  "projects": [
+    {
+      "slug": "kampung-mangir-digital",
+      "title": "Kampung Mangir Digital",
+      "category": "Website / Community",
+      "status": "placeholder",
+      "description": "Website profil digital yang menyatukan informasi dusun, kegiatan, budaya, dan dokumentasi dalam satu pengalaman yang mudah dijelajahi."
+    },
+    {
+      "slug": "faast-penerbangan",
+      "title": "FAAST Penerbangan",
+      "category": "Website / Education",
+      "status": "placeholder",
+      "description": "Digital experience untuk lembaga pendidikan dan pelatihan yang menempatkan informasi program, fasilitas, kegiatan, dan CTA pendaftaran secara lebih terstruktur."
+    },
+    {
+      "slug": "logikaos",
+      "title": "LogikaOS",
+      "category": "Information System",
+      "status": "placeholder",
+      "description": "Konsep sistem informasi operasional untuk membantu bisnis mengelola proses kerja, data, dan kebutuhan internal secara lebih rapi."
+    },
+    {
+      "slug": "bmt-artha-barokah",
+      "title": "BMT Artha Barokah",
+      "category": "Website / Financial Service",
+      "status": "placeholder",
+      "description": "Website layanan keuangan dengan pengalaman informasi yang jelas, termasuk simulasi kebutuhan pembiayaan."
+    },
+    {
+      "slug": "haloafid-ai-assistant",
+      "title": "HaloAfid AI Assistant",
+      "category": "AI / Automation",
+      "status": "placeholder",
+      "description": "Konsep asisten AI yang membantu menangani pertanyaan berulang, merangkum informasi, dan menghubungkan alur kerja digital."
+    },
+    {
+      "slug": "local-commerce-search",
+      "title": "Local Commerce Search Engine",
+      "category": "SEO & GEO",
+      "status": "placeholder",
+      "description": "Eksperimen optimasi visibilitas lokal agar bisnis lebih mudah dipahami oleh search engine dan mesin jawaban berbasis AI."
+    }
+  ]
+}

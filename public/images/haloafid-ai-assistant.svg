@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="HaloAfid AI Assistant">
+  <rect width="400" height="300" fill="#070A10"/>
+
+  <rect x="60" y="40" width="280" height="220" rx="14" fill="#121824" stroke="#202838"/>
+  <rect x="90" y="70" width="220" height="160" rx="10" fill="#0D111A" stroke="#202838"/>
+  <circle cx="170" cy="140" r="34" fill="#4D7CFF" opacity="0.2"/>
+  <circle cx="170" cy="140" r="16" fill="#4D7CFF"/>
+  <circle cx="230" cy="140" r="24" fill="#4D7CFF" opacity="0.55"/>
+  <circle cx="210" cy="110" r="6" fill="#4D7CFF"/>
+  <circle cx="200" cy="170" r="6" fill="#4D7CFF"/>
+  <circle cx="240" cy="170" r="6" fill="#4D7CFF"/>
+  <rect x="90" y="210" width="120" height="8" rx="4" fill="#202838"/>
+  <rect x="90" y="226" width="80" height="8" rx="4" fill="#161d2a"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#070A10"/>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <defs>
+    <radialGradient id="g" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#2563FF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#2563FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <text x="80" y="300" font-family="Inter, system-ui, sans-serif" font-size="88" font-weight="700" fill="#F5F7FB">WE BUILD DIGITAL</text>
+  <text x="80" y="400" font-family="Inter, system-ui, sans-serif" font-size="88" font-weight="700" fill="#2563FF">EXPERIENCES THAT WORK.</text>
+  <text x="80" y="500" font-family="monospace" font-size="28" fill="#6F7888" letter-spacing="6">HALOAFID / DIGITAL STUDIO</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Kampung Mangir Digital">
+  <rect width="400" height="300" fill="#070A10"/>
+
+  <rect x="60" y="60" width="280" height="180" rx="12" fill="#121824" stroke="#202838"/>
+  <rect x="80" y="80" width="40" height="24" rx="4" fill="#2563FF" opacity="0.85"/>
+  <circle cx="120" cy="96" r="4" fill="#070A10"/>
+  <rect x="140" y="80" width="120" height="24" rx="4" fill="#202838"/>
+  <rect x="80" y="116" width="240" height="10" rx="3" fill="#202838"/>
+  <rect x="80" y="136" width="200" height="10" rx="3" fill="#161d2a"/>
+  <rect x="80" y="156" width="220" height="10" rx="3" fill="#161d2a"/>
+  <rect x="80" y="176" width="180" height="10" rx="3" fill="#161d2a"/>
+  <rect x="80" y="206" width="110" height="26" rx="6" fill="#2563FF"/>
+</svg>

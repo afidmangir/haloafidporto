@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="FAAST Penerbangan">
+  <rect width="400" height="300" fill="#070A10"/>
+
+  <rect x="40" y="40" width="320" height="220" rx="14" fill="#0D111A" stroke="#202838"/>
+  <path d="M60 200 L260 120 L230 130 L300 80 L290 150 L180 190 Z" fill="#4D7CFF" opacity="0.9"/>
+  <line x1="60" y1="200" x2="300" y2="80" stroke="#4D7CFF" stroke-width="1.5" opacity="0.4"/>
+  <circle cx="300" cy="80" r="5" fill="#4D7CFF"/>
+  <rect x="60" y="220" width="160" height="10" rx="4" fill="#202838"/>
+  <rect x="60" y="240" width="120" height="8" rx="4" fill="#161d2a"/>
+</svg>
