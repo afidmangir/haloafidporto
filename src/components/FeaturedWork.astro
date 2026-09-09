@@ -3,59 +3,45 @@ import { projects } from "../data/projects";
 const featured = projects.slice(0, 3);
 ---
 
-<section id="work" class="py-24 md:py-32">
+<section id="work" class="py-24 md:py-32 bg-white border-y-2 border-[var(--color-ink)]">
   <div class="container-site">
     <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
       <div>
-        <p class="kicker mb-4" data-reveal>Pekerjaan Terpilih</p>
+        <p class="kicker mb-4" data-reveal>Karya pilihan</p>
         <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
-          <span class="scrub-mask"><span class="scrub-word">Karya</span></span>{" "}
-          <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">yang</span></span>{" "}
-          <span class="scrub-mask"><span class="scrub-word">berbicara.</span></span>
+          <span class="scrub-mask"><span class="scrub-word">Yang</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">baru</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word">jadi.</span></span>
         </h2>
       </div>
-      <a
-        href="#work-archive"
-        class="link-line text-sm font-semibold text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
-        data-reveal style="--reveal-delay:0.15s"
-      >
-        Lihat semua project →
+      <a href="#work-archive" class="btn btn-dark !py-2.5 !px-5 text-xs" data-reveal style="--reveal-delay:0.15s" data-magnetic>
+        Lihat semua →
       </a>
     </div>
 
-    <!-- Bento grid -->
+    <!-- Bento -->
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {featured.map((p, i) => (
         <article
-          class={`card project-card group relative overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
-          data-project-card
+          class={`card card-hover group relative overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
           data-tilt3d
           data-reveal="scale"
           style={`--reveal-delay:${i * 0.1}s`}
         >
           <div class="tilt-glare"></div>
-          <span class="absolute left-5 top-4 font-[var(--font-display)] text-5xl font-bold text-[var(--color-ink)]/10 z-[1]" aria-hidden="true">0{i + 1}</span>
-          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[320px]" : "aspect-[16/9]"}`}>
-            <img
-              src={p.image}
-              alt={p.title}
-              loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-700"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <span class="absolute left-4 top-4 tag bg-white/90 backdrop-blur">{p.category}</span>
+          <span class="absolute left-5 top-4 font-[var(--font-display)] text-5xl font-bold text-[var(--color-ink)]/15 z-[1]" aria-hidden="true">0{i + 1}</span>
+          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[300px]" : "aspect-[16/9]"}`}>
+            <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
+            <span class="absolute left-4 top-4 tag !bg-[var(--color-yellow)] z-[1]">{p.category}</span>
           </div>
-          <div class="p-6 md:p-7">
-            <h3 class="display-section text-2xl">{p.title}</h3>
-            <p class="mt-2.5 text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2">{p.description}</p>
+          <div class="p-7">
+            <h3 class="display-section text-2xl mb-2.5 group-hover:text-[var(--color-accent)] transition-colors duration-200">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2">{p.description}</p>
             <div class="mt-5 flex flex-wrap gap-2">
               {p.services.map((s) => (
                 <span class="tag">{s}</span>
               ))}
             </div>
-          </div>
-          <div class="absolute bottom-6 right-6 grid h-11 w-11 place-items-center rounded-full bg-[var(--color-accent)] text-white opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
           </div>
         </article>
       ))}

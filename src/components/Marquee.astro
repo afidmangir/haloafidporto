@@ -1,16 +1,23 @@
 ---
-const items = ["Website Cepat", "Sistem Informasi", "SEO & GEO", "Solusi AI", "Desain Modern", "Mobile-First"];
+const items = [
+  "Website Cepat ⚡",
+  "Sistem Informasi 🗂️",
+  "SEO & GEO 🔍",
+  "Solusi AI 🤖",
+  "Support Santai ❤️",
+  "Garansi Rapi ✨",
+];
 ---
 
-<section class="border-y border-[var(--color-line)] bg-white py-5 overflow-hidden" aria-hidden="true">
+<section class="border-y-2 border-[var(--color-ink)] bg-[var(--color-yellow)] py-4 overflow-hidden" aria-hidden="true">
   <div class="marquee">
     <div class="marquee-track">
       {[0, 1].map((copy) => (
         <div class="flex shrink-0 items-center">
           {items.map((item) => (
-            <span class="flex items-center gap-8 px-8 text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-ink-soft)]">
+            <span class="flex items-center gap-6 px-6 font-[var(--font-display)] text-base font-bold uppercase tracking-wider">
               {item}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="text-[var(--color-accent)]"><path d="M12 2v20M2 12h20"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 2v20M2 12h20"/></svg>
             </span>
           ))}
         </div>

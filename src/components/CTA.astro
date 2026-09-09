@@ -5,44 +5,43 @@ import { site } from "../data/site";
 <section id="contact" class="py-24 md:py-32">
   <div class="container-site">
     <div
-      class="nb-card nb-yellow relative overflow-hidden px-8 py-16 md:px-16 md:py-20 text-center !border-[3px]"
+      class="card !bg-[var(--color-yellow)] relative overflow-hidden px-8 py-16 md:px-16 md:py-20 text-center !rounded-3xl !shadow-[10px_10px_0_0_var(--color-ink)]"
       data-reveal="scale"
     >
       <!-- Decorative blocks -->
-      <span class="absolute left-6 top-6 w-8 h-8 rounded-md bg-[var(--color-accent)] border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
-      <span class="absolute right-8 top-10 w-5 h-5 rounded-full bg-[var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
-      <span class="absolute left-10 bottom-8 w-6 h-6 rounded-md bg-[var(--color-pink)] hidden sm:block" aria-hidden="true"></span>
-      <span class="absolute right-10 bottom-12 w-4 h-4 rotate-45 bg-[var(--color-accent)] border-2 border-[var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
+      <span class="absolute left-6 top-6 w-9 h-9 rounded-lg bg-[var(--color-accent)] border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
+      <span class="absolute right-8 top-10 w-6 h-6 rounded-full bg-[var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
+      <span class="absolute left-10 bottom-8 w-7 h-7 rounded-lg bg-[var(--color-green)] border-2 border-[var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
+      <span class="absolute right-10 bottom-12 w-5 h-5 rotate-45 bg-[var(--color-pink)] border-2 border-[var(--color-ink)] hidden sm:block" aria-hidden="true"></span>
 
       <div class="mx-auto max-w-2xl">
-        <p class="nb-tag mb-6 justify-center !text-[0.78rem]" data-reveal>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.5-6.3 4.5L8 13.8 2 9.2h7.6z"/></svg>
-          Mulai Project
+        <p class="tag mb-6 !bg-white justify-center !text-xs" data-reveal>
+          ✨ Gratis konsultasi awal — serius, gratis
         </p>
-        <h2 class="display-hero text-4xl md:text-6xl !tracking-tight" data-reveal style="--reveal-delay:0.08s">
-          Punya ide? Mari
-          <span class="block text-[var(--color-accent)] relative inline-block">
-            bicarakan.
+        <h2 class="display-hero text-4xl md:text-6xl" data-reveal style="--reveal-delay:0.08s">
+          Yuk, ngobrol<br />
+          <span class="relative inline-block text-[var(--color-accent)]">
+            projectmu!
             <svg class="absolute -bottom-3 left-0 w-full" viewBox="0 0 200 12" fill="none" aria-hidden="true"><path d="M2 9C40 3 160 3 198 9" stroke="var(--color-ink)" stroke-width="4" stroke-linecap="round"/></svg>
           </span>
         </h2>
-        <p class="mt-8 text-lg text-[var(--color-ink)]/80" data-reveal style="--reveal-delay:0.15s">
-          Ceritakan kebutuhan kamu — kami balas dalam 1×24 jam dengan langkah
-          selanjutnya yang jelas.
+        <p class="mt-8 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.15s">
+          Ceritain aja idemu — mau bikin website, sistem, atau bingung mulai dari mana.
+          Kita bales <strong>maksimal 1×24 jam</strong> dengan langkah selanjutnya yang jelas.
         </p>
 
         <div class="mt-10 flex flex-wrap items-center justify-center gap-4" data-reveal style="--reveal-delay:0.22s">
-          <a href={site.whatsapp} target="_blank" rel="noopener" class="nb-btn nb-btn-blue !px-8 !py-4 text-base" data-magnetic>
+          <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn-blue !px-8 !py-4 text-base" data-magnetic>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Chat via WhatsApp
+            Chat WhatsApp
           </a>
-          <a href={`mailto:${site.email}`} class="nb-btn !px-8 !py-4 text-base" data-magnetic>
-            {site.email}
+          <a href={`mailto:${site.email}`} class="btn btn-dark !px-8 !py-4 text-base" data-magnetic>
+            ✉️ {site.email}
           </a>
         </div>
 
-        <p class="mt-8 text-sm font-medium text-[var(--color-ink)]/70" data-reveal style="--reveal-delay:0.3s">
-          ✦ Tidak ada komitmen di tahap diskusi awal.
+        <p class="mt-8 text-sm font-bold text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.3s">
+          ⭐ Nggak ada commitmen di tahap ngobrol — yang penting nyambung dulu!
         </p>
       </div>
     </div>

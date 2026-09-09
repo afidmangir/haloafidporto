@@ -156,6 +156,26 @@ function initCounters() {
   });
 }
 
+/* ---------------- Big statement parallax ---------------- */
+function initBigText() {
+  if (prefersReduced) return;
+  const section = document.querySelector("[data-bigtext-section]");
+  const lines = document.querySelectorAll<HTMLElement>("[data-big-line]");
+  if (!section || !lines.length) return;
+  lines.forEach((line) => {
+    gsap.to(line, {
+      yPercent: 40,
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+  });
+}
+
 /* ---------------- Scrub heading reveal ---------------- */
 function initScrubHeading() {
   if (prefersReduced) return;
@@ -364,6 +384,7 @@ function boot() {
   initParallax();
   initScrubHeading();
   initHorizontalScroll();
+  initBigText();
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
 }

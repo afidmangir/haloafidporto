@@ -2,106 +2,76 @@
 const principles = [
   {
     num: "01",
-    title: "Sederhana sebelum rumit",
-    desc: "Fitur yang tidak dibutuhkan adalah beban. Mulai dari yang paling penting.",
-    color: "nb-yellow",
+    title: "Santai, bukan asal",
+    desc: "Ngobrolnya santai, tapi outputnya serius dan rapi. Nggak ada setengah-setengah.",
   },
   {
     num: "02",
-    title: "Berguna di atas hiasan",
-    desc: "Setiap elemen mendukung tujuan bisnis — bukan sekadar terlihat bagus.",
-    color: "nb-blue",
+    title: "Fokus ke hasil",
+    desc: "Bukan cuma cantik. Website harus bantu bisnismu — dapat leads, pesanan, kepercayaan.",
   },
   {
     num: "03",
-    title: "Cepat sejak awal",
-    desc: "Performa bukan tambahan. Bagian dari cara kami membangun.",
-    color: "nb-pink",
+    title: "Cepat itu wajib",
+    desc: "Nggak ada yang sabar buka website lemot. Performa sudah jadi harga mati dari awal.",
   },
   {
     num: "04",
-    title: "Dibangun untuk nyata",
-    desc: "Alur kerja yang benar-benar dipakai, bukan demo di atas kertas.",
-    color: "nb-green",
+    title: "Jujur & jelas",
+    desc: "Progress di-update, biaya transparan, tenggat realistis. Nggak ada janji muluk.",
   },
 ];
+const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
-<section id="about" class="py-24 md:py-32 border-y-2 border-[var(--color-ink)]" data-scroll-section>
+<section id="about" class="py-24 md:py-32">
   <div class="container-site">
-    <!-- Bento: media + text bertingkat -->
-    <div class="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <!-- Media card (neobrutalism) -->
-      <div class="nb-card nb-yellow relative overflow-hidden p-8 md:p-12 flex flex-col justify-between min-h-[380px]" data-reveal="scale">
-        <!-- big decorative number -->
-        <span class="absolute -right-4 -top-8 font-[var(--font-display)] text-[9rem] font-bold leading-none text-[var(--color-ink)]/10 select-none pointer-events-none" aria-hidden="true">A.</span>
-        <!-- rotating sticker -->
-        <div class="sticker-wrap self-end mt-2" data-reveal style="--reveal-delay:0.1s">
-          <div class="sticker-core">
-            <span>
-              DIGITAL<br />STUDIO
-              <br />EST. 2024
-            </span>
-          </div>
-          <div class="sticker-ring">
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <path id="circlePath" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
-              </defs>
-              <text fill="currentColor" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="1.5">
-                <textPath href="#circlePath">
-                  HALOAFID • DIGITAL STUDIO • WEBSITE • SEO • AI •
-                </textPath>
-              </text>
-            </svg>
+    <p class="kicker mb-4" data-reveal>Tentang kita</p>
+    <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
+      <span class="scrub-mask"><span class="scrub-word">Studio</span></span>{" "}
+      <span class="scrub-mask"><span class="scrub-word">kecil,</span></span>{" "}
+      <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">hasil</span></span>{" "}
+      <span class="scrub-mask"><span class="scrub-word">gede.</span></span>
+    </h2>
+
+    <div class="mt-14 grid gap-8 lg:grid-cols-2 lg:gap-14 items-start">
+      <!-- Left: sticky -->
+      <div class="lg:sticky lg:top-28">
+        <div class="card !bg-[var(--color-yellow)] p-8 md:p-10">
+          <span class="text-5xl block mb-5" aria-hidden="true">💡</span>
+          <p class="display-hero text-3xl md:text-4xl leading-tight">
+            Satu studio,<br />
+            <span class="text-[var(--color-accent)]">semua bisa.</span>
+          </p>
+          <p class="mt-6 text-lg leading-relaxed text-[var(--color-ink-soft)]">
+            HaloAfid itu studio independen dari Indonesia. Kecil memang, tapi itu justru
+            keunggulannya — kamu ngobrol langsung sama yang ngerjain, bukan sama sales.
+            Dari website toko, profil desa, sampe sistem kasir: satu tim, satu tanggung jawab.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <span class="tag !bg-white">🇮🇩 Indonesia</span>
+            <span class="tag !bg-white">⏱️ Respon cepat</span>
+            <span class="tag !bg-white">☕ Ngopi dulu boleh</span>
           </div>
         </div>
       </div>
 
-      <!-- Text side -->
-      <div class="flex flex-col justify-center gap-6">
-        <div>
-          <p class="kicker mb-4" data-reveal>Tentang Kami</p>
-          <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.05s">
-            Studio digital kecil yang <span class="text-[var(--color-accent)]">fokus pada hasil.</span>
-          </h2>
-        </div>
-        <p class="text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.1s">
-          HaloAfid adalah studio independen dari Indonesia. Kami percaya teknologi terbaik
-          adalah yang tidak terlihat — bekerja di belakang layar, membuat bisnis berjalan
-          lebih mulus, dan membuat pelanggan lebih mudah menemukan kamu.
-        </p>
-        <p class="text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.15s">
-          Dari website perusahaan hingga sistem manajemen, kami membangun dengan standar
-          teknis yang sama: cepat, aman, mudah dipelihara, dan siap bertumbuh.
-        </p>
-        <div data-reveal style="--reveal-delay:0.2s">
-          <a href="#contact" class="nb-btn" data-magnetic>
-            Kenali kami lebih jauh
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Principles grid (neobrutalism cards) -->
-    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {principles.map((p, i) => (
-        <div
-          class={`nb-card ${p.color} p-6`}
-          data-tilt3d
-          data-reveal
-          style={`--reveal-delay:${i * 0.07}s`}
-        >
-          <div class="tilt-glare"></div>
-          <div class="flex items-baseline justify-between mb-4">
-            <span class="font-[var(--font-display)] text-3xl font-bold">{p.num}</span>
-            <span class="nb-tag">Prinsip</span>
+      <!-- Right: stack cards -->
+      <div class="space-y-6">
+        {principles.map((p, i) => (
+          <div
+            class={`card card-hover ${colors[i]} p-7 flex gap-5 items-start`}
+            data-reveal
+            style={`--reveal-delay:${i * 0.07}s`}
+          >
+            <span class="display-hero text-3xl font-bold">{p.num}</span>
+            <div>
+              <h3 class="display-section text-xl mb-1.5">{p.title}</h3>
+              <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{p.desc}</p>
+            </div>
           </div>
-          <h3 class="font-[var(--font-display)] text-lg font-bold leading-snug mb-2">{p.title}</h3>
-          <p class="text-sm leading-relaxed text-[var(--color-ink)]/80">{p.desc}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </div>
 </section>

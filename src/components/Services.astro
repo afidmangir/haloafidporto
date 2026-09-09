@@ -1,47 +1,49 @@
 ---
 import { services } from "../data/services";
 
-const icons: Record<string, string> = {
-  website:
-    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>',
-  systems:
-    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
-  search:
-    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
-  ai:
-    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.5"/></svg>',
+const emojis: Record<string, string> = {
+  website: "🌐",
+  systems: "🗂️",
+  search: "🔍",
+  ai: "🤖",
 };
+const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
-<section id="services" class="py-24 md:py-32 bg-white border-y border-[var(--color-line)]">
+<section id="services" class="py-24 md:py-32">
   <div class="container-site">
-    <div class="mb-14 max-w-2xl">
-      <p class="kicker mb-4" data-reveal>Layanan</p>
-      <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
-          <span class="scrub-mask"><span class="scrub-word">Apa</span></span>{" "}
-          <span class="scrub-mask"><span class="scrub-word">yang</span></span>{" "}
-          <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">kami</span></span>{" "}
-          <span class="scrub-mask"><span class="scrub-word">kerjakan.</span></span>
+    <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="kicker mb-4" data-reveal>Layanan kita</p>
+        <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
+          <span class="scrub-mask"><span class="scrub-word">Bisa</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word">bantu</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">apa?</span></span>
         </h2>
-      <p class="mt-5 text-lg text-[var(--color-ink-soft)]" data-reveal style={`--reveal-delay:0.15s`}>
-        Dari landing page hingga sistem informasi lengkap — semua dibangun dengan fondasi teknis yang kuat dan perhatian pada detail.
+      </div>
+      <p class="max-w-xs text-sm font-medium text-[var(--color-muted)]" data-reveal style="--reveal-delay:0.15s">
+        Semua dikerjakan sendiri di rumah — nggak ada subkon, nggak ada lempar-lemparan.
       </p>
     </div>
 
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-5 md:grid-cols-2">
       {services.map((s, i) => (
         <article
-          class="card group relative p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]"
+          class={`card card-hover ${colors[i % 4]} group relative p-7 md:p-9`}
           data-tilt3d
           data-reveal
           style={`--reveal-delay:${i * 0.08}s`}
         >
-          <div class="mb-6 inline-grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)] transition-colors duration-300 group-hover:bg-[var(--color-accent)] group-hover:text-white" set:html={icons[s.id]}></div>
-          <h3 class="display-section text-xl mb-2.5">{s.title}</h3>
-          <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{s.description}</p>
-          <div class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] opacity-0 translate-x-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-            Mulai diskusi
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <div class="tilt-glare"></div>
+          <div class="flex items-start justify-between mb-6">
+            <span class="text-4xl" aria-hidden="true">{emojis[s.id]}</span>
+            <span class="tag !bg-white">0{i + 1}</span>
+          </div>
+          <h3 class="display-section text-2xl mb-3">{s.title}</h3>
+          <p class="text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]">{s.description}</p>
+          <div class="mt-7 inline-flex items-center gap-2 font-[var(--font-display)] text-sm font-bold uppercase tracking-wide">
+            <a href="#contact" class="link-line">Mau kayak gini? 😄</a>
+            <span class="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
           </div>
         </article>
       ))}
