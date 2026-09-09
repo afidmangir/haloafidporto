@@ -2,49 +2,44 @@
 import { projects } from "../data/projects";
 ---
 
-<section class="py-28 md:py-40 border-t border-line">
+<section id="work-archive" class="py-24 md:py-32">
   <div class="container-site">
-    <div class="flex flex-wrap items-end justify-between gap-6 mb-14">
-      <div>
-        <p class="kicker mb-4" data-reveal>ARCHIVE</p>
-        <h2 class="display-section text-text-primary" data-reveal>
-          More selected work.
-        </h2>
-      </div>
+    <div class="mb-14">
+      <p class="kicker mb-4" data-reveal>Semua Project</p>
+      <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.08s">
+        Arsip <span class="text-[var(--color-accent)]">karya.</span>
+      </h2>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {
-        projects.map((project) => (
-          <article
-            class="group border border-line rounded-2xl bg-surface overflow-hidden hover:border-electric/40 transition-colors"
-            data-grid-card
-          >
-            <a href={project.image} class="block overflow-hidden" aria-label={`${project.title} — ${project.category}`}>
-              <img
-                src={project.image}
-                alt={project.title}
-                width="800"
-                height="600"
-                loading="lazy"
-                class="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              />
-            </a>
-            <div class="p-6">
-              <p class="kicker mb-2">{project.category}</p>
-              <h3 class="text-lg font-semibold tracking-tight mb-1 group-hover:text-electric transition-colors">
-                {project.title}
-              </h3>
-              <p class="text-sm text-text-secondary line-clamp-2">
-                {project.description}
-              </p>
-              {project.status === "placeholder" && (
-                <p class="kicker !text-text-muted mt-3">sample project</p>
-              )}
+    <div class="space-y-5">
+      {projects.map((p, i) => (
+        <article
+          class="card group flex flex-col md:flex-row md:items-center gap-6 md:gap-8 p-5 md:p-6 overflow-hidden transition-all duration-300 hover:shadow-[var(--shadow-lift)]"
+          data-reveal
+          style={`--reveal-delay:${Math.min(i * 0.05, 0.2)}s`}
+        >
+          <div class="project-img w-full md:w-56 shrink-0 rounded-xl overflow-hidden aspect-[16/10]">
+            <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="tag">{p.category}</span>
+              {p.services.map((s) => (
+                <span class="tag">{s}</span>
+              ))}
             </div>
-          </article>
-        ))
-      }
+            <h3 class="display-section text-2xl group-hover:text-[var(--color-accent)] transition-colors duration-300">{p.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2">{p.description}</p>
+          </div>
+          <div class="hidden md:grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[var(--color-line)] text-[var(--color-ink-soft)] transition-all duration-300 group-hover:bg-[var(--color-accent)] group-hover:border-[var(--color-accent)] group-hover:text-white">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </div>
+        </article>
+      ))}
     </div>
+    <p class="mt-8 text-sm text-[var(--color-muted)]" data-reveal>
+      * Project di atas adalah karya terpilih. Punya kebutuhan serupa?{" "}
+      <a href="#contact" class="link-line text-[var(--color-accent)] font-medium">Diskusikan dengan kami</a>.
+    </p>
   </div>
 </section>

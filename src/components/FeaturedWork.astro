@@ -3,77 +3,57 @@ import { projects } from "../data/projects";
 const featured = projects.slice(0, 3);
 ---
 
-<section id="work" class="py-28 md:py-40">
+<section id="work" class="py-24 md:py-32">
   <div class="container-site">
-    <div class="flex flex-wrap items-end justify-between gap-6 mb-16">
+    <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
       <div>
-        <p class="kicker mb-4" data-reveal>SELECTED WORK</p>
-        <h2 class="display-section text-text-primary" data-reveal>
-          Work that moves<br />business forward.
+        <p class="kicker mb-4" data-reveal>Pekerjaan Terpilih</p>
+        <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.08s">
+          Karya yang <span class="text-[var(--color-accent)]">berbicara.</span>
         </h2>
       </div>
-      <p class="body-large max-w-sm" data-reveal>
-        Proyek pilihan — dari website, sistem informasi, hingga eksperimen AI dan SEO.
-      </p>
+      <a
+        href="#work-archive"
+        class="link-line text-sm font-semibold text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
+        data-reveal style="--reveal-delay:0.15s"
+      >
+        Lihat semua project →
+      </a>
     </div>
 
-    <div class="space-y-20 md:space-y-28">
-      {
-        featured.map((project, i) => (
-          <article
-            class="grid md:grid-cols-12 gap-8 items-center group"
-            data-project-card
-          >
-            <div class={`md:col-span-7 ${i % 2 === 1 ? "md:order-2" : ""}`}>
-              <a
-                href={project.image}
-                class="block overflow-hidden rounded-2xl border border-line bg-surface"
-                aria-label={`${project.title} — ${project.category}`}
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  width="1200"
-                  height="800"
-                  loading={i === 0 ? "eager" : "lazy"}
-                  class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-              </a>
+    <!-- Bento grid -->
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {featured.map((p, i) => (
+        <article
+          class={`card project-card group relative overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
+          data-project-card
+          data-reveal="scale"
+          style={`--reveal-delay:${i * 0.1}s`}
+        >
+          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[320px]" : "aspect-[16/9]"}`}>
+            <img
+              src={p.image}
+              alt={p.title}
+              loading="lazy"
+              class="h-full w-full object-cover transition-transform duration-700"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <span class="absolute left-4 top-4 tag bg-white/90 backdrop-blur">{p.category}</span>
+          </div>
+          <div class="p-6 md:p-7">
+            <h3 class="display-section text-2xl">{p.title}</h3>
+            <p class="mt-2.5 text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2">{p.description}</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              {p.services.map((s) => (
+                <span class="tag">{s}</span>
+              ))}
             </div>
-            <div class={`md:col-span-5 ${i % 2 === 1 ? "md:order-1" : ""}`}>
-              <p class="kicker mb-3" data-reveal>{project.category}</p>
-              <h3
-                class="text-3xl md:text-4xl font-semibold tracking-tight leading-[1.05] mb-4"
-                data-reveal
-              >
-                {project.title}
-              </h3>
-              <p class="body-large mb-6" data-reveal>{project.description}</p>
-              <div class="flex flex-wrap gap-2 mb-8" data-reveal>
-                {
-                  project.services.map((s) => (
-                    <span class="kicker !text-text-secondary border border-line rounded-full px-3 py-1">
-                      {s}
-                    </span>
-                  ))
-                }
-                {project.status === "placeholder" && (
-                  <span class="kicker !text-text-muted border border-dashed border-line rounded-full px-3 py-1">
-                    sample
-                  </span>
-                )}
-              </div>
-              <a
-                href={project.image}
-                class="inline-flex items-center gap-2 text-sm font-semibold text-electric hover:text-bright transition-colors"
-                data-reveal
-              >
-                View case<span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </article>
-        ))
-      }
+          </div>
+          <div class="absolute bottom-6 right-6 grid h-11 w-11 place-items-center rounded-full bg-[var(--color-accent)] text-white opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>

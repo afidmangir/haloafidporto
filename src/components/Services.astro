@@ -1,44 +1,47 @@
 ---
 import { services } from "../data/services";
+
+const icons: Record<string, string> = {
+  website:
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>',
+  systems:
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  search:
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  ai:
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.5"/></svg>',
+};
 ---
 
-<section id="services" class="py-28 md:py-40 border-t border-line">
+<section id="services" class="py-24 md:py-32 bg-white border-y border-[var(--color-line)]">
   <div class="container-site">
-    <div class="max-w-3xl mb-20">
-      <p class="kicker mb-4" data-reveal>CAPABILITIES</p>
-      <h2 class="display-section text-text-primary" data-reveal>
-        From first idea to useful digital product.
+    <div class="mb-14 max-w-2xl">
+      <p class="kicker mb-4" data-reveal>Layanan</p>
+      <h2 class="display-section text-4xl md:text-5xl" data-reveal style={`--reveal-delay:0.08s`}>
+        Apa yang <span class="text-[var(--color-accent)]">kami kerjakan.</span>
       </h2>
+      <p class="mt-5 text-lg text-[var(--color-ink-soft)]" data-reveal style={`--reveal-delay:0.15s`}>
+        Dari landing page hingga sistem informasi lengkap — semua dibangun dengan fondasi teknis yang kuat dan perhatian pada detail.
+      </p>
     </div>
 
-    <div class="border-t border-line">
-      {
-        services.map((service, i) => (
-          <div
-            class="group grid md:grid-cols-12 gap-6 py-10 md:py-12 border-b border-line items-baseline"
-            data-service-row
-          >
-            <div class="md:col-span-2">
-              <span class="kicker">{String(i + 1).padStart(2, "0")}</span>
-            </div>
-            <div class="md:col-span-4">
-              <h3 class="text-3xl md:text-4xl font-semibold tracking-tight group-hover:text-electric transition-colors">
-                {service.title}
-              </h3>
-            </div>
-            <div class="md:col-span-5">
-              <p class="text-text-secondary leading-relaxed">
-                {service.description}
-              </p>
-            </div>
-            <div class="md:col-span-1 flex justify-start md:justify-end">
-              <span class="text-electric opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
-                →
-              </span>
-            </div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {services.map((s, i) => (
+        <article
+          class="card group relative p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]"
+          data-tilt
+          data-reveal
+          style={`--reveal-delay:${i * 0.08}s`}
+        >
+          <div class="mb-6 inline-grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent-soft)] text-[var(--color-accent)] transition-colors duration-300 group-hover:bg-[var(--color-accent)] group-hover:text-white" set:html={icons[s.id]}></div>
+          <h3 class="display-section text-xl mb-2.5">{s.title}</h3>
+          <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{s.description}</p>
+          <div class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] opacity-0 translate-x-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+            Mulai diskusi
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </div>
-        ))
-      }
+        </article>
+      ))}
     </div>
   </div>
 </section>

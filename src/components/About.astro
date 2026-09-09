@@ -1,39 +1,67 @@
 ---
 const principles = [
-  "Simple before complex",
-  "Useful over ornamental",
-  "Fast by default",
-  "Built for real workflows",
+  {
+    num: "01",
+    title: "Sederhana sebelum rumit",
+    desc: "Fitur yang tidak dibutuhkan adalah beban. Kami mulai dari yang paling penting.",
+  },
+  {
+    num: "02",
+    title: "Berguna di atas hiasan",
+    desc: "Setiap elemen harus mendukung tujuan bisnis kamu — bukan sekadar terlihat bagus.",
+  },
+  {
+    num: "03",
+    title: "Cepat sejak awal",
+    desc: "Performa bukan fitur tambahan. Ini bagian dari cara kami membangun, sejak baris pertama.",
+  },
+  {
+    num: "04",
+    title: "Dibangun untuk nyata",
+    desc: "Alur kerja yang benar-benar dipakai, bukan demo yang indah di atas kertas.",
+  },
 ];
 ---
 
-<section id="about" class="py-28 md:py-40">
-  <div class="container-site grid lg:grid-cols-12 gap-12">
-    <div class="lg:col-span-5">
-      <p class="kicker mb-4" data-reveal>ABOUT</p>
-      <h2 class="display-section text-text-primary" data-reveal>
-        The studio behind the work.
-      </h2>
-    </div>
-    <div class="lg:col-span-7">
-      <p class="body-large max-w-2xl mb-12" data-reveal>
-        HaloAfid adalah brand digital studio yang menggabungkan desain,
-        development, search visibility, dan AI untuk membuat solusi digital
-        yang benar-benar dipakai.
-      </p>
-      <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8">
-        {
-          principles.map((p, i) => (
-            <div
-              class="flex items-baseline gap-4"
-              data-reveal
-              style={`transition-delay: ${i * 60}ms`}
-            >
-              <span class="kicker">{String(i + 1).padStart(2, "0")}</span>
-              <p class="text-text-primary font-medium">{p}</p>
+<section id="about" class="py-24 md:py-32">
+  <div class="container-site">
+    <div class="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16 items-start">
+      <div>
+        <p class="kicker mb-4" data-reveal>Tentang Kami</p>
+        <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.08s">
+          Studio digital kecil yang <span class="text-[var(--color-accent)]">fokus pada hasil.</span>
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.15s">
+          HaloAfid adalah studio independen dari Indonesia. Kami percaya teknologi terbaik
+          adalah yang tidak terlihat — bekerja di belakang layar, membuat bisnis berjalan
+          lebih mulus, dan membuat pelanggan lebih mudah menemukan kamu.
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.2s">
+          Dari website perusahaan hingga sistem manajemen, kami membangun dengan standar
+          teknis yang sama: cepat, aman, mudah dipelihara, dan siap bertumbuh.
+        </p>
+        <div class="mt-9" data-reveal style="--reveal-delay:0.25s">
+          <a href="#contact" class="btn btn-ghost" data-magnetic>
+            Kenali kami lebih jauh
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        {principles.map((p, i) => (
+          <div
+            class="card group flex gap-5 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+            data-reveal
+            style={`--reveal-delay:${0.05 + i * 0.07}s`}
+          >
+            <span class="display-hero text-2xl text-[var(--color-accent)]">{p.num}</span>
+            <div>
+              <h3 class="display-section text-lg mb-1.5">{p.title}</h3>
+              <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{p.desc}</p>
             </div>
-          ))
-        }
+          </div>
+        ))}
       </div>
     </div>
   </div>
