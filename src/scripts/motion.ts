@@ -156,21 +156,72 @@ function initCounters() {
   });
 }
 
-/* ---------------- Tilt cards ---------------- */
+/* ---------------- Scrub heading reveal ---------------- */
+function initScrubHeading() {
+  if (prefersReduced) return;
+  document.querySelectorAll<HTMLElement>("[data-scrub]").forEach((el) => {
+    const words = el.querySelectorAll<HTMLElement>(".scrub-word");
+    if (!words.length) return;
+    gsap.to(words, {
+      yPercent: 0,
+      ease: "none",
+      stagger: 0.08,
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        end: "top 30%",
+        scrub: 0.5,
+      },
+    });
+  });
+}
+
+/* ---------------- Horizontal scroll (pinned) ---------------- */
+function initHorizontalScroll() {
+  document.querySelectorAll<HTMLElement>("[data-h-scroll]").forEach((section) => {
+    const track = section.querySelector<HTMLElement>("[data-h-track]");
+    if (!track) return;
+    const distance = () => track.scrollWidth - window.innerWidth;
+
+    const tween = gsap.to(track, {
+      x: () => -distance(),
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => `+=${distance()}`,
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+      },
+    });
+
+    // Quick cleanup if reduced motion kicks in later
+    if (prefersReduced) tween.scrollTrigger?.kill();
+  });
+}
+
+/* ---------------- Tilt cards (3D + glare) ---------------- */
 function initTilt() {
   if (!finePointer || prefersReduced) return;
-  document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((card) => {
-    const max = 6;
+  document.querySelectorAll<HTMLElement>("[data-tilt3d]").forEach((card) => {
+    const max = 10;
     card.addEventListener("mousemove", (e) => {
       const r = card.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -2;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rx = (py - 0.5) * -2;
+      const ry = (px - 0.5) * 2;
       gsap.to(card, {
         rotateX: rx * max,
         rotateY: ry * max,
+        transformPerspective: 800,
         duration: 0.4,
         ease: "power2.out",
       });
+      card.style.setProperty("--gx", `${px * 100}%`);
+      card.style.setProperty("--gy", `${py * 100}%`);
     });
     card.addEventListener("mouseleave", () => {
       gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.8, ease: "elastic.out(1, 0.5)" });
@@ -218,6 +269,23 @@ function initHeader() {
     start: 60,
     end: "max",
     onUpdate: (self) => header.classList.toggle("is-scrolled", self.progress > 0),
+  });
+
+  // Active nav link highlight based on scroll position
+  const links = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-link]"));
+  if (!links.length) return;
+  links.forEach((link) => {
+    ScrollTrigger.create({
+      trigger: document.querySelector(link.getAttribute("href") || "") as HTMLElement,
+      start: "top 40%",
+      end: "bottom 40%",
+      onToggle: (self) => {
+        if (self.isActive) {
+          links.forEach((l) => l.classList.remove("is-active"));
+          link.classList.add("is-active");
+        }
+      },
+    });
   });
 }
 
@@ -294,6 +362,8 @@ function boot() {
   initCounters();
   initTilt();
   initParallax();
+  initScrubHeading();
+  initHorizontalScroll();
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
 }

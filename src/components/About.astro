@@ -3,66 +3,105 @@ const principles = [
   {
     num: "01",
     title: "Sederhana sebelum rumit",
-    desc: "Fitur yang tidak dibutuhkan adalah beban. Kami mulai dari yang paling penting.",
+    desc: "Fitur yang tidak dibutuhkan adalah beban. Mulai dari yang paling penting.",
+    color: "nb-yellow",
   },
   {
     num: "02",
     title: "Berguna di atas hiasan",
-    desc: "Setiap elemen harus mendukung tujuan bisnis kamu — bukan sekadar terlihat bagus.",
+    desc: "Setiap elemen mendukung tujuan bisnis — bukan sekadar terlihat bagus.",
+    color: "nb-blue",
   },
   {
     num: "03",
     title: "Cepat sejak awal",
-    desc: "Performa bukan fitur tambahan. Ini bagian dari cara kami membangun, sejak baris pertama.",
+    desc: "Performa bukan tambahan. Bagian dari cara kami membangun.",
+    color: "nb-pink",
   },
   {
     num: "04",
     title: "Dibangun untuk nyata",
-    desc: "Alur kerja yang benar-benar dipakai, bukan demo yang indah di atas kertas.",
+    desc: "Alur kerja yang benar-benar dipakai, bukan demo di atas kertas.",
+    color: "nb-green",
   },
 ];
 ---
 
-<section id="about" class="py-24 md:py-32">
+<section id="about" class="py-24 md:py-32 border-y-2 border-[var(--color-ink)]" data-scroll-section>
   <div class="container-site">
-    <div class="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16 items-start">
-      <div>
-        <p class="kicker mb-4" data-reveal>Tentang Kami</p>
-        <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.08s">
-          Studio digital kecil yang <span class="text-[var(--color-accent)]">fokus pada hasil.</span>
-        </h2>
-        <p class="mt-6 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.15s">
+    <!-- Bento: media + text bertingkat -->
+    <div class="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <!-- Media card (neobrutalism) -->
+      <div class="nb-card nb-yellow relative overflow-hidden p-8 md:p-12 flex flex-col justify-between min-h-[380px]" data-reveal="scale">
+        <!-- big decorative number -->
+        <span class="absolute -right-4 -top-8 font-[var(--font-display)] text-[9rem] font-bold leading-none text-[var(--color-ink)]/10 select-none pointer-events-none" aria-hidden="true">A.</span>
+        <!-- rotating sticker -->
+        <div class="sticker-wrap self-end mt-2" data-reveal style="--reveal-delay:0.1s">
+          <div class="sticker-core">
+            <span>
+              DIGITAL<br />STUDIO
+              <br />EST. 2024
+            </span>
+          </div>
+          <div class="sticker-ring">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <path id="circlePath" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+              </defs>
+              <text fill="currentColor" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="1.5">
+                <textPath href="#circlePath">
+                  HALOAFID • DIGITAL STUDIO • WEBSITE • SEO • AI •
+                </textPath>
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text side -->
+      <div class="flex flex-col justify-center gap-6">
+        <div>
+          <p class="kicker mb-4" data-reveal>Tentang Kami</p>
+          <h2 class="display-section text-4xl md:text-5xl" data-reveal style="--reveal-delay:0.05s">
+            Studio digital kecil yang <span class="text-[var(--color-accent)]">fokus pada hasil.</span>
+          </h2>
+        </div>
+        <p class="text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.1s">
           HaloAfid adalah studio independen dari Indonesia. Kami percaya teknologi terbaik
           adalah yang tidak terlihat — bekerja di belakang layar, membuat bisnis berjalan
           lebih mulus, dan membuat pelanggan lebih mudah menemukan kamu.
         </p>
-        <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.2s">
+        <p class="text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.15s">
           Dari website perusahaan hingga sistem manajemen, kami membangun dengan standar
           teknis yang sama: cepat, aman, mudah dipelihara, dan siap bertumbuh.
         </p>
-        <div class="mt-9" data-reveal style="--reveal-delay:0.25s">
-          <a href="#contact" class="btn btn-ghost" data-magnetic>
+        <div data-reveal style="--reveal-delay:0.2s">
+          <a href="#contact" class="nb-btn" data-magnetic>
             Kenali kami lebih jauh
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
           </a>
         </div>
       </div>
+    </div>
 
-      <div class="space-y-5">
-        {principles.map((p, i) => (
-          <div
-            class="card group flex gap-5 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
-            data-reveal
-            style={`--reveal-delay:${0.05 + i * 0.07}s`}
-          >
-            <span class="display-hero text-2xl text-[var(--color-accent)]">{p.num}</span>
-            <div>
-              <h3 class="display-section text-lg mb-1.5">{p.title}</h3>
-              <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{p.desc}</p>
-            </div>
+    <!-- Principles grid (neobrutalism cards) -->
+    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {principles.map((p, i) => (
+        <div
+          class={`nb-card ${p.color} p-6`}
+          data-tilt3d
+          data-reveal
+          style={`--reveal-delay:${i * 0.07}s`}
+        >
+          <div class="tilt-glare"></div>
+          <div class="flex items-baseline justify-between mb-4">
+            <span class="font-[var(--font-display)] text-3xl font-bold">{p.num}</span>
+            <span class="nb-tag">Prinsip</span>
           </div>
-        ))}
-      </div>
+          <h3 class="font-[var(--font-display)] text-lg font-bold leading-snug mb-2">{p.title}</h3>
+          <p class="text-sm leading-relaxed text-[var(--color-ink)]/80">{p.desc}</p>
+        </div>
+      ))}
     </div>
   </div>
 </section>

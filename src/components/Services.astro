@@ -17,9 +17,12 @@ const icons: Record<string, string> = {
   <div class="container-site">
     <div class="mb-14 max-w-2xl">
       <p class="kicker mb-4" data-reveal>Layanan</p>
-      <h2 class="display-section text-4xl md:text-5xl" data-reveal style={`--reveal-delay:0.08s`}>
-        Apa yang <span class="text-[var(--color-accent)]">kami kerjakan.</span>
-      </h2>
+      <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
+          <span class="scrub-mask"><span class="scrub-word">Apa</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word">yang</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">kami</span></span>{" "}
+          <span class="scrub-mask"><span class="scrub-word">kerjakan.</span></span>
+        </h2>
       <p class="mt-5 text-lg text-[var(--color-ink-soft)]" data-reveal style={`--reveal-delay:0.15s`}>
         Dari landing page hingga sistem informasi lengkap — semua dibangun dengan fondasi teknis yang kuat dan perhatian pada detail.
       </p>
@@ -29,7 +32,7 @@ const icons: Record<string, string> = {
       {services.map((s, i) => (
         <article
           class="card group relative p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]"
-          data-tilt
+          data-tilt3d
           data-reveal
           style={`--reveal-delay:${i * 0.08}s`}
         >
