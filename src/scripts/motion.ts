@@ -77,6 +77,9 @@ function initCursor() {
   const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const ringPos = { ...pos };
   gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+  // Munculkan cursor hanya setelah mousemove asli (aman utk touchscreen yg lapor fine)
+  const live = () => document.body.classList.add("cursor-live");
+  window.addEventListener("mousemove", live, { once: true });
   window.addEventListener("mousemove", (e) => {
     pos.x = e.clientX; pos.y = e.clientY;
     gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.08, overwrite: "auto" });
@@ -197,9 +200,9 @@ function initHorizontalScroll() {
       ease: "none",
       scrollTrigger: {
         trigger: section,
-        start: "center center", /* horizontal scroll mulai saat wrapper berada di tengah layar */
-        end: () => `+=${distance()}`,
-        pin: true,
+        start: "center center", /* horizontal scroll mulai saat wrapper di tengah layar */
+                end: () => "+=" + (distance() + section.clientHeight * 0.5), /* pastikan scroll horizontal tuntas sebelum pin lepas */
+                pin: true,
         scrub: 1,
         invalidateOnRefresh: true,
         anticipatePin: 1,

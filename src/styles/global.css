@@ -267,10 +267,8 @@ body {
 }
 
 /* ========== CUSTOM CURSOR ========== */
-@media (pointer: fine) {
-  body.has-cursor, body.has-cursor * { cursor: none !important; }
-}
 .cursor-dot, .cursor-ring {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -278,6 +276,11 @@ body {
   z-index: 9999;
   border-radius: 999px;
   will-change: transform;
+}
+@media (pointer: fine) {
+  body.has-cursor.cursor-live .cursor-dot,
+  body.has-cursor.cursor-live .cursor-ring { display: block; }
+  body.has-cursor.cursor-live, body.has-cursor.cursor-live * { cursor: none !important; }
 }
 .cursor-dot {
   width: 10px;
