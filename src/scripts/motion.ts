@@ -142,7 +142,7 @@ function initOverlapStack() {
       // Pin + scale up as user scrolls past previous card
       ScrollTrigger.create({
         trigger: card,
-        start: `top 80px`,
+        start: "top 55%", // card mulai scale saat di tengah layar (bukan mepet atas)
         end: "top top",
         pin: false,
         onEnter: () => {
@@ -197,7 +197,7 @@ function initHorizontalScroll() {
       ease: "none",
       scrollTrigger: {
         trigger: section,
-        start: "top top",
+        start: "center center", /* horizontal scroll mulai saat wrapper berada di tengah layar */
         end: () => `+=${distance()}`,
         pin: true,
         scrub: 1,
@@ -206,6 +206,50 @@ function initHorizontalScroll() {
       },
     });
   });
+}
+
+/* ======== HERO SCROLL OUT ======== */
+function initHeroScroll() {
+  const hero = document.querySelector<HTMLElement>("#top");
+  if (!hero || prefersReduced) return;
+  const items = [
+    hero.querySelector<HTMLElement>(".flex-wrap.items-center.gap-3.mb-7"),
+    hero.querySelector<HTMLElement>("h1"),
+    hero.querySelector<HTMLElement>('p[data-reveal]'),
+    hero.querySelector<HTMLElement>('.mt-9.flex'),
+    hero.querySelector<HTMLElement>('.grid-cols-3'),
+    hero.querySelector<HTMLElement>('.border-y-2'),
+  ].filter(Boolean) as HTMLElement[];
+  if (!items.length) return;
+
+  // Konten naik keluar atas dengan kecepatan berbeda (parallax layering) + fade
+  gsap.to(items, {
+    yPercent: -130,
+    opacity: 0,
+    ease: "none",
+    stagger: { each: -0.09 }, // elemen bawah keluar duluan, heading paling akhir
+    scrollTrigger: {
+      trigger: hero,
+      start: "top top",
+      end: "max",
+      scrub: true,
+    },
+  });
+
+  // Pattern bg gerak berlawanan (parallax)
+  const pattern = hero.querySelector<HTMLElement>("[data-parallax]");
+  if (pattern) {
+    gsap.fromTo(pattern, { yPercent: 0 }, {
+      yPercent: 30,
+      ease: "none",
+      scrollTrigger: {
+        trigger: hero,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+  }
 }
 
 /* ======== 3D TILT + GLARE ======== */
@@ -365,6 +409,7 @@ function boot() {
   initParallax();
   initScrubHeading();
   initHorizontalScroll();
+  initHeroScroll();
   initBigText();
   initOverlapStack();
 

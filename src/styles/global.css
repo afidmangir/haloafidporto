@@ -233,15 +233,23 @@ body {
 .overlap-stack { position: relative; }
 .overlap-card {
   position: sticky;
-  top: 80px;
+  top: 104px; /* di bawah header float 72px + padding 24px agar tidak tertutup header */
   transform-origin: center top;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0; /* jarak antar card diatur oleh .overlap-stack > * + * gap */
 }
+.overlap-stack > * + * { margin-top: 0.75rem; }
 
 /* ========== STICKY SPLIT ========== */
 .sticky-left {
   position: sticky;
-  top: 88px;
+  top: 112px; /* di bawah header 72px + offset 40px */
+}
+
+/* ======== PROCESS HORIZONTAL CENTERED ======== */
+.process-inner {
+  height: 100vh; /* memenuhi tinggi layar supaya horizontal scroll muncul di tengah */
+  display: flex;
+  align-items: center; /* cards horizontal berada di tengah vertikal layar */
 }
 
 /* ========== BIG STATEMENT ========== */
