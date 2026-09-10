@@ -34,44 +34,38 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
       <span class="scrub-mask"><span class="scrub-word">gede.</span></span>
     </h2>
 
-    <div class="mt-14 grid gap-8 lg:grid-cols-2 lg:gap-14 items-start">
-      <!-- Left: sticky -->
-      <div class="lg:sticky lg:top-28">
-        <div class="card !bg-[var(--color-yellow)] p-8 md:p-10">
-          <span class="text-5xl block mb-5" aria-hidden="true">💡</span>
-          <p class="display-hero text-3xl md:text-4xl leading-tight">
-            Satu studio,<br />
-            <span class="text-[var(--color-accent)]">semua bisa.</span>
-          </p>
-          <p class="mt-6 text-lg leading-relaxed text-[var(--color-ink-soft)]">
-            HaloAfid itu studio independen dari Indonesia. Kecil memang, tapi itu justru
-            keunggulannya — kamu ngobrol langsung sama yang ngerjain, bukan sama sales.
-            Dari website toko, profil desa, sampe sistem kasir: satu tim, satu tanggung jawab.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <span class="tag !bg-white">🇮🇩 Indonesia</span>
-            <span class="tag !bg-white">⏱️ Respon cepat</span>
-            <span class="tag !bg-white">☕ Ngopi dulu boleh</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: stack cards -->
-      <div class="space-y-6">
-        {principles.map((p, i) => (
-          <div
-            class={`card card-hover ${colors[i]} p-7 flex gap-5 items-start`}
-            data-reveal
-            style={`--reveal-delay:${i * 0.07}s`}
-          >
-            <span class="display-hero text-3xl font-bold">{p.num}</span>
+    <!-- STICKY OVERLAP STACK -->
+    <div class="mt-16 overlap-stack">
+      {principles.map((p, i) => (
+        <div
+          class={`overlap-card card ${colors[i]} p-8 md:p-10 relative overflow-hidden`}
+          data-reveal="scale"
+          data-tilt3d
+          style={`--reveal-delay:${i * 0.08}s; z-index:${10 + i};`}
+        >
+          <div class="tilt-glare"></div>
+          <div class="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-start">
             <div>
-              <h3 class="display-section text-xl mb-1.5">{p.title}</h3>
-              <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">{p.desc}</p>
+              <span class="display-hero text-6xl md:text-7xl">{p.num}</span>
+              <span class="tag !bg-white mt-3">Prinsip</span>
+            </div>
+            <div>
+              <h3 class="display-section text-2xl md:text-3xl mb-3">{p.title}</h3>
+              <p class="text-base md:text-lg leading-relaxed text-[var(--color-ink-soft)] max-w-lg">{p.desc}</p>
+              {i === 0 && (
+                <div class="mt-5 flex items-center gap-3 text-sm font-bold text-[var(--color-ink-soft)]">
+                  <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white border-2 border-[var(--color-ink)] shadow-[2px_2px_0_0_var(--color-ink)]">☕</span>
+                  Ngopi dulu? Boleh banget!
+                </div>
+              )}
             </div>
           </div>
-        ))}
-      </div>
+          <!-- Decorative corner -->
+          <span class="absolute right-4 bottom-4 font-[var(--font-display)] text-[8rem] font-bold leading-none text-[var(--color-ink)]/[0.04] select-none" aria-hidden="true">
+            {p.num}
+          </span>
+        </div>
+      ))}
     </div>
   </div>
 </section>

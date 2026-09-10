@@ -1,67 +1,53 @@
 ---
 const steps = [
-  {
-    num: "01",
-    title: "Ngobrol",
-    desc: "Ceritain aja kebutuhan & masalahmu. Kita dengerin, curhat dikit, lalu petakan solusinya bareng-bareng.",
-    dur: "1–2 hari",
-  },
-  {
-    num: "02",
-    title: "Sketsa",
-    desc: "Struktur, konten, dan desain dikonsep dulu. Kamu lihat, kasih feedback, kita poles sampai oke.",
-    dur: "3–5 hari",
-  },
-  {
-    num: "03",
-    title: "Bangun",
-    desc: "Kode rapi, diuji tiap tahap, dan selalu update progress. Nggak bikin deg-degan.",
-    dur: "1–3 minggu",
-  },
-  {
-    num: "04",
-    title: "Jalan",
-    desc: "Deploy, optimasi, plus dukungan lanjutan. Kalau ada kendala, tinggal chat.",
-    dur: "Berkelanjutan",
-  },
+  { num: "01", title: "Ngobrol", desc: "Ceritain aja kebutuhan & masalahmu. Kita dengerin, lalu petakan solusinya bareng-bareng.", dur: "1–2 hari" },
+  { num: "02", title: "Sketsa", desc: "Struktur, konten, dan desain dikonsep dulu. Kamu lihat, kasih feedback, kita poles.", dur: "3–5 hari" },
+  { num: "03", title: "Bangun", desc: "Kode rapi, diuji tiap tahap, update progress. Nggak bikin deg-degan.", dur: "1–3 minggu" },
+  { num: "04", title: "Jalan", desc: "Deploy, optimasi, plus dukungan lanjutan. Kalau kendala, tinggal chat aja.", dur: "Berkelanjutan" },
 ];
 const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
 <section id="process" class="py-24 md:py-32 overflow-hidden">
-  <div class="container-site mb-12">
+  <div class="container-site">
     <p class="kicker mb-4" data-reveal>Gimana caranya</p>
     <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
       <span class="scrub-mask"><span class="scrub-word">Simpel,</span></span>{" "}
       <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">nggak</span></span>{" "}
       <span class="scrub-mask"><span class="scrub-word">ribet.</span></span>
     </h2>
+    <p class="mt-4 max-w-lg text-lg text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.12s">
+      Mulai dari ngobrol santai, terus kita kerjain bareng — step by step, nggak ada yang lompat-lompat.
+    </p>
   </div>
 
-  <!-- Horizontal scroll -->
-  <div class="h-scroll" data-h-scroll>
-    <div class="h-track" data-h-track>
-      {steps.map((s, i) => (
-        <div class="h-panel">
-          <div class={`card ${colors[i]} p-8 h-full flex flex-col min-h-[340px]`}>
-            <div class="flex items-start justify-between mb-10">
-              <span class="font-[var(--font-display)] text-6xl font-bold leading-none">{s.num}</span>
-              <span class="tag !bg-white">{s.dur}</span>
-            </div>
-            <div class="mt-auto">
-              <h3 class="display-section text-2xl mb-3">{s.title}</h3>
-              <p class="text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]">{s.desc}</p>
-            </div>
-            <div class="mt-6 h-2.5 w-full rounded-full bg-[var(--color-ink)]/10 overflow-hidden">
-              <div class="h-full w-0 bg-[var(--color-ink)] transition-all duration-500" data-process-bar></div>
+  <div class="mt-14">
+    <!-- Horizontal scroll -->
+    <div class="h-scroll" data-h-scroll>
+      <div class="h-track" data-h-track>
+        {steps.map((s, i) => (
+          <div class="h-panel">
+            <div class={`card ${colors[i]} p-8 h-full flex flex-col min-h-[340px]`}>
+              <div class="flex items-start justify-between mb-10">
+                <span class="font-[var(--font-display)] text-6xl font-bold leading-none">{s.num}</span>
+                <span class="tag !bg-white">{s.dur}</span>
+              </div>
+              <div class="mt-auto">
+                <h3 class="display-section text-2xl mb-3">{s.title}</h3>
+                <p class="text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]">{s.desc}</p>
+              </div>
+              <div class="mt-6 h-2.5 w-full rounded-full bg-[var(--color-ink)]/10 overflow-hidden">
+                <div class="h-full w-0 bg-[var(--color-ink)] transition-all duration-500" data-process-bar></div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-      <div class="h-panel">
-        <div class="card !bg-[var(--color-ink)] text-white p-8 h-full flex flex-col items-center justify-center text-center min-h-[340px]">
-          <p class="display-section text-3xl mb-5">Siap mulai?</p>
-          <a href="#contact" class="btn btn-primary" data-magnetic>Ngobrol dulu →</a>
+        ))}
+        <div class="h-panel">
+          <div class="card !bg-[var(--color-ink)] text-white p-8 h-full flex flex-col items-center justify-center text-center min-h-[340px]">
+            <span class="text-5xl mb-5">🎯</span>
+            <p class="display-section text-3xl mb-5">Siap mulai?</p>
+            <a href="#contact" class="btn btn-primary" data-magnetic>Ngobrol dulu →</a>
+          </div>
         </div>
       </div>
     </div>
