@@ -4,6 +4,10 @@ export interface SiteConfig {
   phone: string;
   email: string;
   whatsapp: string;
+  tiktok: string;
+  instagram: string;
+  threads: string;
+  address: string;
 }
 
 export const site: SiteConfig = {
@@ -12,6 +16,10 @@ export const site: SiteConfig = {
   phone: "082136006831",
   email: "haloafid@gmail.com",
   whatsapp: "https://wa.me/6282136006831",
+  tiktok: "https://www.tiktok.com/@haloafid",
+  instagram: "https://www.instagram.com/haloafid",
+  threads: "https://www.threads.com/@haloafid",
+  address: "Mangir, Sendangsari, Pajangan, Bantul, DI Yogyakarta",
 };
 
 export const nav = [

@@ -24,7 +24,7 @@ const principles = [
 const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
-<section id="about" class="py-24 md:py-32">
+<section id="about" class="py-24 md:py-32 pb-0 md:pb-0">
   <div class="container-site">
     <p class="kicker mb-4" data-reveal>Kenapa milih saya</p>
     <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
@@ -44,39 +44,40 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
         biaya transparan, tenggat realistis. Kamu fokus jualan, sisanya saya urus.
       </p>
     </div>
+  </div>
 
-    <!-- STICKY OVERLAP STACK -->
-    <div class="mt-16 overlap-stack">
-      {principles.map((p, i) => (
-        <div
-          class={`overlap-card card ${colors[i]} p-8 md:p-10 relative overflow-hidden`}
-          data-reveal="scale"
-          data-tilt3d
-          style={`--reveal-delay:${i * 0.08}s; z-index:${10 + i};`}
-        >
-          <div class="tilt-glare"></div>
+  <!-- STICKY OVERLAP FULL-SCREEN: warna memenuhi layar -->
+  <div class="mt-16 overlap-stack-full" data-overlap-full>
+    {principles.map((p, i) => (
+      <div
+        class={`overlap-full ${colors[i]}`}
+        data-overlap-card
+        data-reveal="scale"
+        style={`--reveal-delay:${i * 0.08}s; z-index:${10 + i};`}
+      >
+        <div class="overlap-full-inner">
           <div class="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-start">
             <div>
-              <span class="display-hero text-6xl md:text-7xl">{p.num}</span>
-              <span class="tag !bg-white mt-3">Prinsip</span>
+              <span class="display-hero text-7xl md:text-8xl">{p.num}</span>
+              <span class="tag !bg-white mt-4">Prinsip</span>
             </div>
-            <div>
-              <h3 class="display-section text-2xl md:text-3xl mb-3">{p.title}</h3>
-              <p class="text-base md:text-lg leading-relaxed text-[var(--color-ink-soft)] max-w-lg">{p.desc}</p>
+            <div class="md:pt-3">
+              <h3 class="display-section text-3xl md:text-5xl mb-4">{p.title}</h3>
+              <p class="text-lg md:text-xl leading-relaxed text-[var(--color-ink-soft)] max-w-xl">{p.desc}</p>
               {i === 0 && (
-                <div class="mt-5 flex items-center gap-3 text-sm font-bold text-[var(--color-ink-soft)]">
+                <div class="mt-6 flex items-center gap-3 text-sm font-bold text-[var(--color-ink-soft)]">
                   <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white border-2 border-[var(--color-ink)] shadow-[2px_2px_0_0_var(--color-ink)]">☕</span>
                   Ngopi dulu? Boleh banget!
                 </div>
               )}
             </div>
           </div>
-          <!-- Decorative corner -->
-          <span class="absolute right-4 bottom-4 font-[var(--font-display)] text-[8rem] font-bold leading-none text-[var(--color-ink)]/[0.04] select-none" aria-hidden="true">
-            {p.num}
-          </span>
         </div>
-      ))}
-    </div>
+        <!-- Decorative corner -->
+        <span class="absolute right-4 bottom-2 font-[var(--font-display)] text-[10rem] md:text-[14rem] font-bold leading-none text-[var(--color-ink)]/[0.05] select-none pointer-events-none" aria-hidden="true">
+          {p.num}
+        </span>
+      </div>
+    ))}
   </div>
 </section>

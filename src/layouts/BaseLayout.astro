@@ -9,7 +9,7 @@ interface Props {
 
 const {
   title = "HaloAfid — Digital Studio | Website, Sistem Informasi, SEO & GEO, AI",
-  description = "HaloAfid adalah personal brand milik Afid dari Indonesia — membangun website, sistem informasi, SEO & GEO, dan solusi AI yang cepat, bersih, dan benar-benar bekerja untuk bisnis.",
+  description = "HaloAfid adalah personal brand milik Afid dari Indonesia — bukan cuma bikin web biar kelihatan profesional, tapi bikin workflow bisnis lebih mudah dan efisien lewat website, sistem informasi, SEO & GEO, dan AI.",
 } = Astro.props;
 
 const ogImage = new URL("/og-image.svg", Astro.site ?? "https://haloafid.site");
@@ -61,14 +61,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://haloafid.si
       name: site.name,
       url: "https://haloafid.site",
       email: site.email,
-      telephone: site.phone,
+      telephone: "+6282136006831",
       description,
       areaServed: "ID",
       priceRange: "$$",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Mangir, Sendangsari, Pajangan",
+        addressLocality: "Bantul",
+        addressRegion: "DI Yogyakarta",
+        addressCountry: "ID",
+      },
+      sameAs: [site.tiktok, site.instagram, site.threads],
     })} />
   </head>
   <body>
-    <div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
     <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
     <div class="cursor-ring" data-cursor-ring aria-hidden="true"></div>
     <slot />

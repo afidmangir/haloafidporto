@@ -8,7 +8,7 @@ const steps = [
 const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
-<section id="process" class="py-24 md:py-32 overflow-hidden">
+<section id="process" class="py-24 md:py-32 overflow-hidden" data-h-wrap>
   <div class="container-site">
     <p class="kicker mb-4" data-reveal>Gimana caranya</p>
     <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
@@ -21,14 +21,13 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
     </p>
   </div>
 
-  <div class="mt-14">
-    <div class="process-inner">
-      <!-- Horizontal scroll -->
+  <div class="mt-14 process-viewport" data-h-viewport>
+    <!-- Horizontal scroll (desktop di-pin, mobile swipe native) -->
     <div class="h-scroll" data-h-scroll>
       <div class="h-track" data-h-track>
         {steps.map((s, i) => (
-          <div class="h-panel">
-            <div class={`card ${colors[i]} p-8 h-full flex flex-col min-h-[340px]`}>
+          <div class="h-panel" data-h-panel>
+            <div class={`card ${colors[i]} p-8 h-full flex flex-col min-h-[340px] md:min-h-[380px]`}>
               <div class="flex items-start justify-between mb-10">
                 <span class="font-[var(--font-display)] text-6xl font-bold leading-none">{s.num}</span>
                 <span class="tag !bg-white">{s.dur}</span>
@@ -37,21 +36,17 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
                 <h3 class="display-section text-2xl mb-3">{s.title}</h3>
                 <p class="text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]">{s.desc}</p>
               </div>
-              <div class="mt-6 h-2.5 w-full rounded-full bg-[var(--color-ink)]/10 overflow-hidden">
-                <div class="h-full w-0 bg-[var(--color-ink)] transition-all duration-500" data-process-bar></div>
-              </div>
             </div>
           </div>
         ))}
-        <div class="h-panel">
-          <div class="card !bg-[var(--color-ink)] text-white p-8 h-full flex flex-col items-center justify-center text-center min-h-[340px]">
+        <div class="h-panel" data-h-panel>
+          <div class="card !bg-[var(--color-ink)] text-white p-8 h-full flex flex-col items-center justify-center text-center min-h-[340px] md:min-h-[380px]">
             <span class="text-5xl mb-5">🎯</span>
             <p class="display-section text-3xl mb-5">Siap mulai?</p>
             <a href="#contact" class="btn btn-primary" data-magnetic>Ngobrol dulu →</a>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </section>

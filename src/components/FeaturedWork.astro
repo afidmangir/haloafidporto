@@ -24,13 +24,12 @@ const featured = projects.slice(0, 3);
       {featured.map((p, i) => (
         <article
           class={`card card-hover group relative overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
-          data-tilt3d
           data-reveal="scale"
+          data-repel="14"
           style={`--reveal-delay:${i * 0.1}s`}
         >
-          <div class="tilt-glare"></div>
           <span class="absolute left-5 top-4 font-[var(--font-display)] text-5xl font-bold text-[var(--color-ink)]/15 z-[1]" aria-hidden="true">0{i + 1}</span>
-          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[300px]" : "aspect-[16/9]"}`}>
+          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[300px]" : "aspect-[16/9]"}`} data-img-reveal data-parallax-img>
             <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
             <span class="absolute left-4 top-4 tag !bg-[var(--color-yellow)] z-[1]">{p.category}</span>
           </div>

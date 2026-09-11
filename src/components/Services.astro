@@ -25,16 +25,17 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
         Semua dikerjakan fokus ke hasil bisnismu — nggak ada template asal jadi.
       </p>
     </div>
+    <div class="h-[3px] w-full bg-[var(--color-ink)] rounded-full mb-10" data-line-grow aria-hidden="true"></div>
 
     <div class="grid gap-5 md:grid-cols-2">
       {services.map((s, i) => (
         <article
           class={`card card-hover ${colors[i % 4]} group relative p-7 md:p-9`}
-          data-tilt3d
           data-reveal
+          data-service-card
+          data-repel="14"
           style={`--reveal-delay:${i * 0.08}s`}
         >
-          <div class="tilt-glare"></div>
           <div class="flex items-start justify-between mb-6">
             <span class="text-4xl" aria-hidden="true">{emojis[s.id]}</span>
             <span class="tag !bg-white">0{i + 1}</span>

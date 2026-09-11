@@ -217,17 +217,41 @@ body {
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-/* ========== HORIZONTAL SCROLL ========== */
+/* ========== HORIZONTAL SCROLL (PIN RAPI) ========== */
+[data-h-wrap] { position: relative; }
+.process-viewport {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
 .h-scroll { position: relative; overflow: hidden; }
 .h-track {
   display: flex;
   gap: 1.5rem;
   align-items: stretch;
   width: max-content;
-  padding-right: 9vw;
+  padding-inline: max(1.5rem, calc((100vw - 1240px) / 2 + 2rem));
+  padding-right: 12vw;
   will-change: transform;
 }
 .h-panel { flex: 0 0 auto; width: min(80vw, 400px); }
+@media (max-width: 767px) {
+  .process-viewport { min-height: 0; display: block; overflow: visible; }
+  .h-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .h-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  .h-track { padding-inline: 1.5rem; padding-right: 1.5rem; }
+  .h-panel { width: min(82vw, 340px); scroll-snap-align: center; }
+}
 
 /* ========== STICKY OVERLAP STACK ========== */
 .overlap-stack { position: relative; }
@@ -239,18 +263,68 @@ body {
 }
 .overlap-stack > * + * { margin-top: 0.75rem; }
 
+/* ——— Varian full-screen: warna memenuhi layar ——— */
+.overlap-stack-full { position: relative; }
+.overlap-full {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  border-top: 2px solid var(--color-ink);
+  border-bottom: 2px solid var(--color-ink);
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  transform-origin: center top;
+  will-change: transform, filter;
+}
+.overlap-full:first-child { border-top-width: 2px; }
+.overlap-full + .overlap-full { margin-top: 0; border-top: 0; }
+.overlap-full-inner {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 6rem 1.5rem;
+}
+@media (min-width: 768px) {
+  .overlap-full-inner { padding: 7rem 2rem; }
+}
+
 /* ========== STICKY SPLIT ========== */
 .sticky-left {
   position: sticky;
   top: 112px; /* di bawah header 72px + offset 40px */
 }
 
-/* ======== PROCESS HORIZONTAL CENTERED ======== */
-.process-inner {
-  height: 100vh; /* memenuhi tinggi layar supaya horizontal scroll muncul di tengah */
-  display: flex;
-  align-items: center; /* cards horizontal berada di tengah vertikal layar */
+/* ========== SCROLL EXTRAS ========== */
+/* Image reveal: clip + scale */
+[data-img-reveal] {
+  overflow: hidden;
+  border-radius: 12px;
 }
+[data-img-reveal] img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.14);
+  will-change: transform, clip-path;
+  clip-path: inset(10% 7% 10% 7% round 16px);
+}
+/* Garis section yang tumbuh saat scroll */
+[data-line-grow] {
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+/* Kartu servis masuk dengan rotasi ringan */
+[data-service-card] { will-change: transform, opacity; }
+/* CTA zoom */
+[data-cta-card] { will-change: transform; transform-origin: center center; }
+[data-float] { will-change: transform; }
 
 /* ========== BIG STATEMENT ========== */
 .bigtext {
@@ -301,20 +375,34 @@ body.cursor-active .cursor-ring {
   border-color: var(--color-ink);
   opacity: 0.9;
 }
-
-/* ========== SCROLL PROGRESS ========== */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  z-index: 9998;
-  background: var(--color-ink);
-  transform-origin: left;
-  transform: scaleX(0);
-  pointer-events: none;
+/* Cursor saat di atas card repel: ring membesar + biru */
+body.cursor-repel .cursor-ring {
+  width: 76px;
+  height: 76px;
+  background: var(--color-accent);
+  border-color: var(--color-ink);
+  opacity: 0.92;
 }
+body.cursor-repel .cursor-dot { background: var(--color-yellow); }
+
+/* Card repel: transform diatur GSAP, jangan dilawan CSS transition */
+[data-repel] { will-change: transform; }
+[data-repel].card-hover { transition: box-shadow 0.18s cubic-bezier(0.22,1,0.36,1); }
+[data-repel].card-hover:hover { box-shadow: 8px 8px 0 0 var(--color-ink); }
+
+/* ========== SCROLLBAR BROWSER DISEMBUNYIKAN ==========
+   Scroll tetap jalan (mouse, touch, keyboard), hanya visualnya disembunyikan. */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar { display: none; width: 0; height: 0; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: transparent; }
 
 /* ========== LINKS ========== */
 .link-line { position: relative; }
@@ -332,23 +420,9 @@ body.cursor-active .cursor-ring {
 }
 .link-line:hover::after { transform: scaleX(1); transform-origin: left; }
 
-/* ========== 3D TILT ========== */
-[data-tilt3d] {
-  transform-style: preserve-3d;
-  will-change: transform;
-  perspective: 1000px;
-}
-.tilt-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,0.55), transparent 55%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 3;
-}
-[data-tilt3d]:hover .tilt-glare { opacity: 1; }
+/* ========== 3D TILT — DISABLED ==========
+   Efek hover 3D dan cahaya (glare) dimatikan sesuai permintaan.
+   Selector dibiarkan kosong agar markup lama tidak error. */
 
 /* ========== REDUCED MOTION ========== */
 @media (prefers-reduced-motion: reduce) {

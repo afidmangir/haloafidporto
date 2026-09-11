@@ -24,20 +24,20 @@ const highlights = ["WEBSITE", "SISTEM INFO", "SEO & GEO", "SOLUSI AI", "SUPPORT
         </div>
 
         <h1 class="display-hero text-[14vw] sm:text-6xl md:text-7xl xl:text-[5.8rem]">
-          <span class="hero-3d"><span class="hero-3d-in">Bisnis makin</span></span>
+          <span class="hero-3d"><span class="hero-3d-in">Bukan cuma</span></span>
           <span class="hero-3d"><span class="hero-3d-in">kelihatan</span></span>
           <span class="hero-3d">
             <span class="hero-3d-in relative inline-block">
-              <span class="relative z-[1] text-[var(--color-accent)]">profesional.</span>
+              <span class="relative z-[1] text-[var(--color-accent)]">tapi beneran profesional.</span>
               <svg class="absolute -bottom-2 left-0 w-full z-0" viewBox="0 0 200 14" aria-hidden="true"><path d="M3 10C50 3 150 3 197 10" stroke="#ffd43b" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
             </span>
           </span>
         </h1>
 
         <p class="mt-7 max-w-xl text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.2s">
-          Bikin bisnismu tampil profesional di internet — website yang cepat,
-          sistem yang rapi, dan strategi biar makin gampang ditemukan pelanggan.
-          Santai diajak ngobrol, serius pas ngerjain.
+          Fokus saya bukan bikin web biar kelihatan profesional doang.
+          Tapi bikin workflow bisnismu lebih gampang dan efisien — orderan ketata,
+          data rapi, kerjaan berulang kepangkas. Website, sistem, sampai AI yang beneran kepake harian.
         </p>
 
         <div class="mt-9 flex flex-wrap items-center gap-4" data-reveal style="--reveal-delay:0.3s">
@@ -54,7 +54,7 @@ const highlights = ["WEBSITE", "SISTEM INFO", "SEO & GEO", "SOLUSI AI", "SUPPORT
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-4 lg:gap-6" data-reveal style="--reveal-delay:0.35s">
         {stats.map((s, i) => (
-          <div class={`card card-hover ${i === 0 ? "!bg-[var(--color-yellow)]" : i === 1 ? "!bg-white" : "!bg-[var(--color-green)]"} px-5 py-4 text-center`}>
+          <div class={`card card-hover ${i === 0 ? "!bg-[var(--color-yellow)]" : i === 1 ? "!bg-white" : "!bg-[var(--color-green)]"} px-5 py-4 text-center`} data-repel="10">
             <span class="display-hero block text-3xl">
               <span data-counter={s.value}>0</span>
               <span class="text-[var(--color-accent)]">{s.suffix}</span>
@@ -73,7 +73,7 @@ const highlights = ["WEBSITE", "SISTEM INFO", "SEO & GEO", "SOLUSI AI", "SUPPORT
           <span class="tag">{h}</span>
         ))}
       </div>
-      <span class="ml-auto hidden md:inline text-sm font-semibold text-[var(--color-muted)]">✨ Garansi: rapi, cepat, dan jelas.</span>
+      <span class="ml-auto hidden md:inline text-sm font-semibold text-[var(--color-muted)]">✨ Fokus: workflow gampang, hemat waktu.</span>
     </div>
   </div>
 </section>

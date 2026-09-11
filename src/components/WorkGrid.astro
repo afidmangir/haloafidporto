@@ -20,15 +20,14 @@ import { projects } from "../data/projects";
         <a
           href="#contact"
           class="card card-hover group flex items-center gap-5 md:gap-7 p-5 md:p-6"
-          data-tilt3d
           data-reveal
+          data-repel="10"
           style={`--reveal-delay:${Math.min(i * 0.05, 0.2)}s`}
         >
-          <div class="tilt-glare"></div>
           <span class="hidden md:grid w-14 h-14 shrink-0 place-items-center font-[var(--font-display)] text-xl font-bold bg-white border-2 border-[var(--color-ink)] rounded-xl shadow-[3px_3px_0_0_var(--color-ink)]">
             0{i + 1}
           </span>
-          <div class="project-img w-20 h-16 md:w-28 md:h-20 shrink-0 rounded-lg overflow-hidden border-2 border-[var(--color-ink)]">
+          <div class="project-img w-20 h-16 md:w-28 md:h-20 shrink-0 rounded-lg overflow-hidden border-2 border-[var(--color-ink)]" data-img-reveal>
             <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
           </div>
           <div class="flex-1 min-w-0">

@@ -6,8 +6,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ============================================================
  * HaloAfid motion v5 — Neo-brutalism
- * Overlap stack, horizontal scroll, 3D tilt with glare,
+ * Overlap stack, horizontal scroll,
  * scrub headings, bigtext parallax, split-text, cursor.
+ * NOTE: 3D tilt + glare dimatikan sesuai permintaan.
  * ============================================================ */
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -115,6 +116,60 @@ function initMagnetic() {
   });
 }
 
+/* ======== REPEL: garis card menjauh dari cursor ========
+   Hover di tepi/border → kartu bergeser menjauhi cursor (kebalikan magnet).
+   Makin dekat ke garis tepi, makin kuat dorongannya. */
+function initRepel() {
+  if (!finePointer || prefersReduced) return;
+  const clampNum = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+  document.querySelectorAll<HTMLElement>("[data-repel]").forEach((el) => {
+    const strength = Number(el.dataset.repel || "14");
+    const edgeRange = 90; // jarak dari tepi di mana efek mulai menguat
+
+    el.addEventListener("mousemove", (e) => {
+      const r = el.getBoundingClientRect();
+      // Vektor dari cursor ke tengah kartu → arah menjauh
+      const dx = r.left + r.width / 2 - e.clientX;
+      const dy = r.top + r.height / 2 - e.clientY;
+      const nx = clampNum(dx / (r.width / 2), -1, 1);
+      const ny = clampNum(dy / (r.height / 2), -1, 1);
+      // Faktor tepi: dekat garis border = 1, di tengah = 0.3
+      const edgeDist = Math.min(
+        e.clientX - r.left,
+        r.right - e.clientX,
+        e.clientY - r.top,
+        r.bottom - e.clientY
+      );
+      const edgeFactor = clampNum(1 - edgeDist / edgeRange, 0.3, 1);
+
+      gsap.to(el, {
+        x: nx * strength * edgeFactor,
+        y: ny * strength * edgeFactor,
+        rotation: nx * 1.2 * edgeFactor,
+        transformPerspective: 800,
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    });
+
+    el.addEventListener("mouseenter", () => {
+      document.body.classList.add("cursor-repel");
+    });
+    el.addEventListener("mouseleave", () => {
+      document.body.classList.remove("cursor-repel");
+      gsap.to(el, {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.45)",
+        overwrite: "auto",
+      });
+    });
+  });
+}
+
 /* ======== COUNTERS (rAF, no GSAP) ======== */
 function initCounters() {
   document.querySelectorAll<HTMLElement>("[data-counter]").forEach((el) => {
@@ -133,8 +188,37 @@ function initCounters() {
   });
 }
 
-/* ======== OVERLAP STACK ======== */
+/* ======== OVERLAP STACK (FULL-SCREEN + LEGACY) ======== */
 function initOverlapStack() {
+  // Varian baru: full-screen, warna memenuhi layar
+  document.querySelectorAll<HTMLElement>("[data-overlap-full]").forEach((stack) => {
+    const cards = Array.from(stack.querySelectorAll<HTMLElement>("[data-overlap-card]"));
+    if (cards.length < 2) return;
+    cards.forEach((card, i) => {
+      if (i === 0) return;
+      // Kartu masuk dari bawah menutupi kartu sebelumnya
+      gsap.fromTo(
+        card,
+        { yPercent: 8 },
+        {
+          yPercent: 0,
+          ease: "none",
+          scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true },
+        }
+      );
+      // Kartu sebelumnya mengecil + meredup saat tertutup
+      const prev = cards[i - 1];
+      gsap.to(prev, {
+        scale: 0.92,
+        filter: "brightness(0.8)",
+        transformOrigin: "center top",
+        ease: "none",
+        scrollTrigger: { trigger: card, start: "top bottom", end: "top top+=120", scrub: true },
+      });
+    });
+  });
+
+  // Legacy: .overlap-stack .overlap-card (jaga-jaga kalau masih dipakai)
   document.querySelectorAll<HTMLElement>(".overlap-stack").forEach((stack) => {
     const cards = stack.querySelectorAll<HTMLElement>(".overlap-card");
     if (cards.length < 2) return;
@@ -189,29 +273,60 @@ function initScrubHeading() {
   });
 }
 
-/* ======== HORIZONTAL SCROLL ======== */
+/* ======== HORIZONTAL SCROLL (PIN RAPI, ANTI-SUSUL) ======== */
 function initHorizontalScroll() {
-  document.querySelectorAll<HTMLElement>("[data-h-scroll]").forEach((section) => {
-    const track = section.querySelector<HTMLElement>("[data-h-track]");
-    if (!track) return;
-    const distance = () => track.scrollWidth - window.innerWidth;
-    gsap.to(track, {
-      x: () => -distance(),
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "center center", /* horizontal scroll mulai saat wrapper di tengah layar */
-                end: () => "+=" + (distance() + section.clientHeight * 0.5), /* pastikan scroll horizontal tuntas sebelum pin lepas */
-                pin: true,
-        scrub: 1,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-      },
+  const mm = gsap.matchMedia();
+
+  // Desktop: pin section, track jalan penuh sebelum pin dilepas
+  mm.add("(min-width: 768px)", () => {
+    document.querySelectorAll<HTMLElement>("[data-h-wrap]").forEach((wrap) => {
+      const viewport = wrap.querySelector<HTMLElement>("[data-h-viewport]") ?? wrap;
+      const track = wrap.querySelector<HTMLElement>("[data-h-track]");
+      if (!track) return;
+      const panels = Array.from(track.querySelectorAll<HTMLElement>("[data-h-panel]"));
+
+      const getDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+
+      gsap.to(track, {
+        x: () => -getDistance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrap,
+          start: "top top",
+          // Jarak scroll = lebar sisa track + sedikit buffer agar tuntas, lalu pin dilepas.
+          // Ini yang mencegah section berikutnya menyusul sebelum horizontal selesai.
+          end: () => "+=" + (getDistance() + window.innerHeight * 0.2),
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Panel pop-in ringan saat track bergerak (tanpa containerAnimation agar stabil)
+      panels.forEach((panel, i) => {
+        gsap.fromTo(
+          panel,
+          { y: 36, rotation: i % 2 === 0 ? -1.2 : 1.2 },
+          {
+            y: 0,
+            rotation: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: { trigger: wrap, start: "top 75%", once: true },
+          }
+        );
+      });
     });
+  });
+
+  // Mobile: kembalikan ke swipe native, pastikan tidak ada sisa transform
+  mm.add("(max-width: 767px)", () => {
+    gsap.set("[data-h-track]", { x: 0, clearProps: "transform" });
   });
 }
 
-/* ======== HERO SCROLL OUT ======== */
+/* ======== HERO SCROLL OUT (RAPI, TIDAK HILANG TIBA-TIBA) ======== */
 function initHeroScroll() {
   const hero = document.querySelector<HTMLElement>("#top");
   if (!hero || prefersReduced) return;
@@ -225,16 +340,16 @@ function initHeroScroll() {
   ].filter(Boolean) as HTMLElement[];
   if (!items.length) return;
 
-  // Konten naik keluar atas dengan kecepatan berbeda (parallax layering) + fade
+  // Konten parallax keluar ke atas + fade, selesai tepat saat hero habis (bukan "max")
   gsap.to(items, {
-    yPercent: -130,
+    y: -70,
     opacity: 0,
     ease: "none",
-    stagger: { each: -0.09 }, // elemen bawah keluar duluan, heading paling akhir
+    stagger: 0.08,
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: "max",
+      end: "bottom 30%",
       scrub: true,
     },
   });
@@ -243,7 +358,7 @@ function initHeroScroll() {
   const pattern = hero.querySelector<HTMLElement>("[data-parallax]");
   if (pattern) {
     gsap.fromTo(pattern, { yPercent: 0 }, {
-      yPercent: 30,
+      yPercent: 18,
       ease: "none",
       scrollTrigger: {
         trigger: hero,
@@ -255,50 +370,9 @@ function initHeroScroll() {
   }
 }
 
-/* ======== 3D TILT + GLARE ======== */
-function initTilt() {
-  if (!finePointer || prefersReduced) return;
-  document.querySelectorAll<HTMLElement>("[data-tilt3d]").forEach((card) => {
-    const maxRotate = 12;
-    const maxGlare = 0.6;
-
-    card.addEventListener("mousemove", (e) => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-
-      // 3D rotation
-      const rx = (0.5 - py) * maxRotate * 2;
-      const ry = (px - 0.5) * maxRotate * 2;
-
-      gsap.to(card, {
-        rotateX: rx,
-        rotateY: ry,
-        transformPerspective: 900,
-        transformOrigin: "center center",
-        duration: 0.4,
-        ease: "power2.out",
-      });
-
-      // Glare position
-      card.style.setProperty("--gx", `${px * 100}%`);
-      card.style.setProperty("--gy", `${py * 100}%`);
-
-      // Scale boost
-      gsap.to(card, { scale: 1.02, duration: 0.3, ease: "power2.out" });
-    });
-
-    card.addEventListener("mouseleave", () => {
-      gsap.to(card, {
-        rotateX: 0,
-        rotateY: 0,
-        scale: 1,
-        duration: 0.7,
-        ease: "elastic.out(1, 0.4)",
-      });
-    });
-  });
-}
+/* ======== 3D TILT + GLARE — DISABLED ========
+   Dihapus sesuai permintaan: tidak ada efek hover 3D
+   dan tidak ada efek cahaya saat hover. */
 
 /* ======== PARALLAX ======== */
 function initParallax() {
@@ -312,14 +386,144 @@ function initParallax() {
   });
 }
 
-/* ======== SCROLL PROGRESS ======== */
-function initScrollProgress() {
-  const bar = document.querySelector<HTMLElement>("[data-scroll-progress]");
-  if (!bar) return;
-  if (prefersReduced) { bar.style.display = "none"; return; }
-  gsap.to(bar, { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
+/* ======== IMAGE REVEAL (clip + scale, scrub) ======== */
+function initImgReveal() {
+  if (prefersReduced) {
+    document.querySelectorAll<HTMLElement>("[data-img-reveal] img").forEach((img) => {
+      img.style.transform = "none";
+      img.style.clipPath = "none";
+    });
+    return;
+  }
+  document.querySelectorAll<HTMLElement>("[data-img-reveal]").forEach((wrap) => {
+    const img = wrap.querySelector<HTMLElement>("img");
+    if (!img) return;
+    gsap.fromTo(
+      img,
+      { scale: 1.14, clipPath: "inset(10% 7% 10% 7% round 16px)" },
+      {
+        scale: 1,
+        clipPath: "inset(0% 0% 0% 0% round 12px)",
+        ease: "none",
+        scrollTrigger: { trigger: wrap, start: "top 88%", end: "top 38%", scrub: 1 },
+      }
+    );
+  });
 }
 
+/* ======== PARALLAX KHUSUS GAMBAR ======== */
+function initParallaxImg() {
+  if (prefersReduced) return;
+  document.querySelectorAll<HTMLElement>("[data-parallax-img]").forEach((wrap) => {
+    const img = wrap.querySelector<HTMLElement>("img") ?? wrap;
+    gsap.fromTo(
+      img,
+      { yPercent: -8 },
+      {
+        yPercent: 8,
+        ease: "none",
+        scrollTrigger: { trigger: wrap, start: "top bottom", end: "bottom top", scrub: true },
+      }
+    );
+  });
+}
+
+/* ======== GARIS SECTION TUMBUH ======== */
+function initLineGrow() {
+  if (prefersReduced) {
+    document.querySelectorAll<HTMLElement>("[data-line-grow]").forEach((el) => {
+      el.style.transform = "scaleX(1)";
+    });
+    return;
+  }
+  document.querySelectorAll<HTMLElement>("[data-line-grow]").forEach((el) => {
+    gsap.fromTo(
+      el,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: { trigger: el, start: "top 92%", end: "top 55%", scrub: 1 },
+      }
+    );
+  });
+}
+
+/* ======== SERVICE CARDS STAGGER ======== */
+function initServiceCards() {
+  if (prefersReduced) return;
+  const cards = gsap.utils.toArray<HTMLElement>("[data-service-card]");
+  if (!cards.length) return;
+  cards.forEach((card, i) => {
+    gsap.fromTo(
+      card,
+      { y: 56, opacity: 0, rotation: i % 2 === 0 ? -1.5 : 1.5 },
+      {
+        y: 0,
+        opacity: 1,
+        rotation: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: { trigger: card, start: "top 88%", once: true },
+      }
+    );
+  });
+}
+
+/* ======== CTA ZOOM + FLOAT ======== */
+function initCta() {
+  if (prefersReduced) return;
+  document.querySelectorAll<HTMLElement>("[data-cta-card]").forEach((card) => {
+    gsap.fromTo(
+      card,
+      { scale: 0.93, rotation: -1.2, y: 40 },
+      {
+        scale: 1,
+        rotation: 0,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: card, start: "top 85%", once: true },
+      }
+    );
+  });
+  document.querySelectorAll<HTMLElement>("[data-float]").forEach((el, i) => {
+    gsap.to(el, {
+      y: i % 2 === 0 ? -12 : 12,
+      rotation: i % 2 === 0 ? 6 : -6,
+      duration: 2.4 + i * 0.3,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+  });
+}
+
+/* ======== MARQUEE Miring mengikuti kecepatan scroll ======== */
+function initMarqueeVelocity() {
+  if (prefersReduced) return;
+  const tracks = document.querySelectorAll<HTMLElement>(".marquee-track");
+  if (!tracks.length) return;
+  let proxy = { skew: 0 };
+  const clampSkew = gsap.utils.clamp(-6, 6);
+  ScrollTrigger.create({
+    onUpdate: (self) => {
+      const v = self.getVelocity();
+      const target = clampSkew(v / -400);
+      if (Math.abs(target) > Math.abs(proxy.skew)) {
+        proxy.skew = target;
+        gsap.to(tracks, { skewX: target, duration: 0.4, ease: "power2.out", overwrite: true });
+        gsap.to(proxy, {
+          skew: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          overwrite: true,
+          onUpdate: () => gsap.set(tracks, { skewX: proxy.skew }),
+        });
+      }
+    },
+  });
+}
 /* ======== HEADER (floating + active nav) ======== */
 function initHeader() {
   const header = document.querySelector("[data-header]");
@@ -397,7 +601,7 @@ function boot() {
   initReveals();
   initMobileMenu();
   initSplitText();
-  initScrollProgress();
+  initLineGrow();
 
   if (prefersReduced) {
     ScrollTrigger.refresh();
@@ -407,9 +611,14 @@ function boot() {
   initLenis();
   initCursor();
   initMagnetic();
+  initRepel();
   initCounters();
-  initTilt();
   initParallax();
+  initParallaxImg();
+  initImgReveal();
+  initServiceCards();
+  initCta();
+  initMarqueeVelocity();
   initScrubHeading();
   initHorizontalScroll();
   initHeroScroll();
@@ -417,6 +626,8 @@ function boot() {
   initOverlapStack();
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
+  // Refresh ulang setelah gambar/font selesai agar pin & sticky presisi
+  window.addEventListener("load", () => ScrollTrigger.refresh());
 }
 
 if (document.readyState === "loading") {
