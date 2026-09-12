@@ -21,8 +21,9 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
     </p>
   </div>
 
-  <div class="mt-14 process-viewport" data-h-viewport>
-    <!-- Horizontal scroll (desktop di-pin, mobile swipe native) -->
+  <div class="mt-14 h-tall" data-h-tall>
+    <div class="h-sticky" data-h-viewport>
+    <!-- Horizontal scroll (desktop sticky+geser, mobile swipe native) -->
     <div class="h-scroll" data-h-scroll>
       <div class="h-track" data-h-track>
         {steps.map((s, i) => (
@@ -47,6 +48,7 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </section>

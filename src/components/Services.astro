@@ -31,10 +31,8 @@ const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[v
       {services.map((s, i) => (
         <article
           class={`card card-hover ${colors[i % 4]} group relative p-7 md:p-9`}
-          data-reveal
           data-service-card
-          data-repel="14"
-          style={`--reveal-delay:${i * 0.08}s`}
+          data-water
         >
           <div class="flex items-start justify-between mb-6">
             <span class="text-4xl" aria-hidden="true">{emojis[s.id]}</span>

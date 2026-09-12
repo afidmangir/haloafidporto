@@ -160,18 +160,20 @@ body {
   box-shadow: 2px 2px 0 0 var(--color-ink);
 }
 
-/* ========== REVEAL ========== */
-[data-reveal] {
+/* ========== REVEAL (hanya disembunyikan bila JS aktif) ==========
+   Tanpa JS semua konten tetap tampil — anti halaman kosong. */
+[data-reveal] { opacity: 1; transform: none; }
+html.js [data-reveal] {
   opacity: 0;
   transform: translateY(26px);
   transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
   transition-delay: var(--reveal-delay, 0s);
 }
-[data-reveal].is-visible { opacity: 1; transform: none; }
-[data-reveal="scale"] { transform: scale(0.92); }
-[data-reveal="scale"].is-visible { transform: scale(1); }
-[data-reveal="slide-right"] { transform: translateX(-30px); }
-[data-reveal="slide-right"].is-visible { transform: none; }
+html.js [data-reveal].is-visible { opacity: 1; transform: none; }
+html.js [data-reveal="scale"] { transform: scale(0.92); }
+html.js [data-reveal="scale"].is-visible { transform: scale(1); }
+html.js [data-reveal="slide-right"] { transform: translateX(-30px); }
+html.js [data-reveal="slide-right"].is-visible { transform: none; }
 
 /* ========== HERO 3D ENTRANCE ========== */
 .hero-3d {
@@ -217,13 +219,17 @@ body {
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-/* ========== HORIZONTAL SCROLL (PIN RAPI) ========== */
+/* ========== HORIZONTAL SCROLL (STICKY, TANPA PIN) ========== */
 [data-h-wrap] { position: relative; }
-.process-viewport {
+/* Tinggi .h-tall diatur JS = 100vh + sisa track (progress 1:1) */
+.h-tall { position: relative; }
+.h-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 100vh;
   overflow: hidden;
 }
 .h-scroll { position: relative; overflow: hidden; }
@@ -238,7 +244,8 @@ body {
 }
 .h-panel { flex: 0 0 auto; width: min(80vw, 400px); }
 @media (max-width: 767px) {
-  .process-viewport { min-height: 0; display: block; overflow: visible; }
+  .h-tall { height: auto !important; }
+  .h-sticky { position: static; height: auto; display: block; overflow: visible; }
   .h-scroll {
     overflow-x: auto;
     overflow-y: hidden;
@@ -252,6 +259,21 @@ body {
   .h-track { padding-inline: 1.5rem; padding-right: 1.5rem; }
   .h-panel { width: min(82vw, 340px); scroll-snap-align: center; }
 }
+/* Mode native (reduced-motion): swipe biasa, tanpa sticky */
+.h-tall.h-native { height: auto !important; }
+.h-tall.h-native .h-sticky { position: static; height: auto; display: block; overflow: visible; }
+.h-tall.h-native .h-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.h-tall.h-native .h-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+/* Tanpa JS: swipe biasa */
+html:not(.js) .h-tall { height: auto; }
+html:not(.js) .h-sticky { position: static; height: auto; display: block; overflow: visible; }
+html:not(.js) .h-scroll { overflow-x: auto; }
 
 /* ========== STICKY OVERLAP STACK ========== */
 .overlap-stack { position: relative; }
@@ -300,7 +322,7 @@ body {
 }
 
 /* ========== SCROLL EXTRAS ========== */
-/* Image reveal: clip + scale */
+/* Image reveal: clip + scale (hanya bila JS aktif, tanpa JS gambar normal) */
 [data-img-reveal] {
   overflow: hidden;
   border-radius: 12px;
@@ -310,15 +332,20 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+html.js [data-img-reveal] img {
   transform: scale(1.14);
   will-change: transform, clip-path;
   clip-path: inset(10% 7% 10% 7% round 16px);
 }
 /* Garis section yang tumbuh saat scroll */
-[data-line-grow] {
-  transform: scaleX(0);
-  transform-origin: left center;
-  will-change: transform;
+[data-line-grow] { transform-origin: left center; will-change: transform; }
+html.js [data-line-grow] { transform: scaleX(0); }
+/* Split words */
+.split-word { display: inline-block; }
+@keyframes split-word-in {
+  from { opacity: 0; transform: translateY(110%); }
+  to { opacity: 1; transform: translateY(0); }
 }
 /* Kartu servis masuk dengan rotasi ringan */
 [data-service-card] { will-change: transform, opacity; }
@@ -375,20 +402,34 @@ body.cursor-active .cursor-ring {
   border-color: var(--color-ink);
   opacity: 0.9;
 }
-/* Cursor saat di atas card repel: ring membesar + biru */
-body.cursor-repel .cursor-ring {
+/* Cursor saat menyentuh garis air */
+body.cursor-water .cursor-ring {
   width: 76px;
   height: 76px;
   background: var(--color-accent);
   border-color: var(--color-ink);
   opacity: 0.92;
 }
-body.cursor-repel .cursor-dot { background: var(--color-yellow); }
+body.cursor-water .cursor-dot { background: var(--color-yellow); }
 
-/* Card repel: transform diatur GSAP, jangan dilawan CSS transition */
-[data-repel] { will-change: transform; }
-[data-repel].card-hover { transition: box-shadow 0.18s cubic-bezier(0.22,1,0.36,1); }
-[data-repel].card-hover:hover { box-shadow: 8px 8px 0 0 var(--color-ink); }
+/* Garis air: SVG menimpa border saat disentuh cursor */
+[data-water] { position: relative; }
+.water-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.water-line path { fill: none; }
+.water-line path.echo { stroke: var(--color-accent); stroke-width: 1.5; opacity: 0.45; }
+.water-line path.main { stroke: var(--color-ink); stroke-width: 2; }
+[data-water].water-live { border-color: transparent; }
+[data-water].water-live .water-line { opacity: 1; }
 
 /* ========== SCROLLBAR BROWSER DISEMBUNYIKAN ==========
    Scroll tetap jalan (mouse, touch, keyboard), hanya visualnya disembunyikan. */

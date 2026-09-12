@@ -21,7 +21,8 @@ function initLenis() {
   if (prefersReduced) return;
   lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
   lenis.on("scroll", ScrollTrigger.update);
-  const raf = (time: number) => { lenis!.raf(time * 1000); requestAnimationFrame(raf); };
+  // requestAnimationFrame memberi timestamp dalam MILIDETIK — teruskan apa adanya.
+  const raf = (time: number) => { lenis!.raf(time); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener("click", (e) => {
@@ -116,56 +117,198 @@ function initMagnetic() {
   });
 }
 
-/* ======== REPEL: garis card menjauh dari cursor ========
-   Hover di tepi/border → kartu bergeser menjauhi cursor (kebalikan magnet).
-   Makin dekat ke garis tepi, makin kuat dorongannya. */
-function initRepel() {
+/* ======== WATER LINE: garis tepi melengkung menjauhi cursor ========
+   Seperti menekan permukaan air — border menekuk menjauhi cursor
+   (lengkungan + riak echo), lalu memantul balik saat cursor pergi. */
+function initWaterLine() {
   if (!finePointer || prefersReduced) return;
-  const clampNum = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
-  document.querySelectorAll<HTMLElement>("[data-repel]").forEach((el) => {
-    const strength = Number(el.dataset.repel || "14");
-    const edgeRange = 90; // jarak dari tepi di mana efek mulai menguat
 
-    el.addEventListener("mousemove", (e) => {
-      const r = el.getBoundingClientRect();
-      // Vektor dari cursor ke tengah kartu → arah menjauh
-      const dx = r.left + r.width / 2 - e.clientX;
-      const dy = r.top + r.height / 2 - e.clientY;
-      const nx = clampNum(dx / (r.width / 2), -1, 1);
-      const ny = clampNum(dy / (r.height / 2), -1, 1);
-      // Faktor tepi: dekat garis border = 1, di tengah = 0.3
-      const edgeDist = Math.min(
-        e.clientX - r.left,
-        r.right - e.clientX,
-        e.clientY - r.top,
-        r.bottom - e.clientY
+  const NS = "http://www.w3.org/2000/svg";
+  const STEP = 12; // jarak sampling titik (px)
+  const SIGMA = 80; // radius pengaruh cursor (px) — lebih kecil = lebih lokal & responsif
+  const STRENGTH = 30; // dorongan maksimum sebelum clamp
+  const MAX_DENT = 16; // batas lengkung maksimum (px)
+  const R = 13; // radius sudut (selaras border .card 14px, inset 1px)
+  const O = 1; // inset path dari tepi (tengah stroke 2px)
+
+  interface Pt { x: number; y: number; }
+  interface WaterState {
+    svg: SVGSVGElement;
+    main: SVGPathElement;
+    echo: SVGPathElement;
+    cx: number;
+    cy: number;
+    rest: Pt[];
+    cur: Pt[];
+    trail: Pt[];
+    cursor: Pt | null;
+    raf: number;
+  }
+  const states = new Map<HTMLElement, WaterState>();
+
+  // Sampling rounded-rect searah jarum jam mulai dari sisi atas
+  function roundedRectPoints(w: number, h: number): Pt[] {
+    const pts: Pt[] = [];
+    const x0 = O, y0 = O, x1 = w - O, y1 = h - O;
+    for (let x = x0 + R; x <= x1 - R; x += STEP) pts.push({ x, y: y0 });
+    for (let a = -90; a <= 0; a += 10) {
+      const t = (a * Math.PI) / 180;
+      pts.push({ x: x1 - R + R * Math.cos(t), y: y0 + R + R * Math.sin(t) });
+    }
+    for (let y = y0 + R; y <= y1 - R; y += STEP) pts.push({ x: x1, y });
+    for (let a = 0; a <= 90; a += 10) {
+      const t = (a * Math.PI) / 180;
+      pts.push({ x: x1 - R + R * Math.cos(t), y: y1 - R + R * Math.sin(t) });
+    }
+    for (let x = x1 - R; x >= x0 + R; x -= STEP) pts.push({ x, y: y1 });
+    for (let a = 90; a <= 180; a += 10) {
+      const t = (a * Math.PI) / 180;
+      pts.push({ x: x0 + R + R * Math.cos(t), y: y1 - R + R * Math.sin(t) });
+    }
+    for (let y = y1 - R; y >= y0 + R; y -= STEP) pts.push({ x: x0, y });
+    for (let a = 180; a <= 270; a += 10) {
+      const t = (a * Math.PI) / 180;
+      pts.push({ x: x0 + R + R * Math.cos(t), y: y0 + R + R * Math.sin(t) });
+    }
+    return pts;
+  }
+
+  // Path halus tertutup (Catmull-Rom → bezier)
+  function smoothPath(pts: Pt[]): string {
+    const n = pts.length;
+    if (!n) return "";
+    let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+    for (let i = 0; i < n; i++) {
+      const p0 = pts[(i - 1 + n) % n], p1 = pts[i];
+      const p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+      const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+    return d + " Z";
+  }
+
+  function ensureState(el: HTMLElement): WaterState | null {
+    const w = el.clientWidth, h = el.clientHeight;
+    if (w < 10 || h < 10) return null;
+    // Pakai ulang SVG bila sudah ada (tahan HMR reboot)
+    const oldSvg = el.querySelector("svg.water-line") as SVGSVGElement | null;
+    let st = states.get(el);
+    const rest = roundedRectPoints(w, h);
+    if (!st) {
+      const svg =
+        oldSvg ??
+        (() => {
+          const s = document.createElementNS(NS, "svg");
+          s.setAttribute("class", "water-line");
+          s.setAttribute("aria-hidden", "true");
+          const echo = document.createElementNS(NS, "path");
+          echo.setAttribute("class", "echo");
+          const main = document.createElementNS(NS, "path");
+          main.setAttribute("class", "main");
+          s.appendChild(echo);
+          s.appendChild(main);
+          el.appendChild(s);
+          return s;
+        })();
+      svg.setAttribute("width", String(w));
+      svg.setAttribute("height", String(h));
+      const echo = svg.querySelector("path.echo") as SVGPathElement;
+      const main = svg.querySelector("path.main") as SVGPathElement;
+      st = { svg, main, echo, cx: w / 2, cy: h / 2, rest, cur: rest.map((p) => ({ ...p })), trail: rest.map((p) => ({ ...p })), cursor: null, raf: 0 };
+      states.set(el, st);
+    } else {
+      st.svg.setAttribute("width", String(w));
+      st.svg.setAttribute("height", String(h));
+      st.cx = w / 2;
+      st.cy = h / 2;
+      st.rest = rest;
+      st.cur = rest.map((p) => ({ ...p }));
+      st.trail = rest.map((p) => ({ ...p }));
+      st.main.setAttribute("d", smoothPath(rest));
+      st.echo.setAttribute("d", smoothPath(rest));
+    }
+    return st;
+  }
+
+  function frame(el: HTMLElement, st: WaterState) {
+    const n = st.rest.length;
+    let maxDelta = 0;
+    for (let i = 0; i < n; i++) {
+      let tx = st.rest[i].x, ty = st.rest[i].y;
+      if (st.cursor) {
+        // Arah SELALU ke dalam card (titik tengah) — seperti menekan air.
+        // Cursor hanya menentukan seberapa dalam tekanannya (falloff).
+        const dx = st.rest[i].x - st.cursor.x;
+        const dy = st.rest[i].y - st.cursor.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const fall = Math.exp(-(dist * dist) / (2 * SIGMA * SIGMA));
+        const mag = Math.min(MAX_DENT, STRENGTH * fall);
+        let ix = st.cx - st.rest[i].x, iy = st.cy - st.rest[i].y;
+        const il = Math.hypot(ix, iy) || 0.001;
+        tx = st.rest[i].x + (ix / il) * mag;
+        ty = st.rest[i].y + (iy / il) * mag;
+      }
+      // Lerp cepat = garis nempel cursor (responsif), trail lambat = riak
+      st.cur[i].x += (tx - st.cur[i].x) * 0.55;
+      st.cur[i].y += (ty - st.cur[i].y) * 0.55;
+      st.trail[i].x += (st.cur[i].x - st.trail[i].x) * 0.22;
+      st.trail[i].y += (st.cur[i].y - st.trail[i].y) * 0.22;
+      maxDelta = Math.max(
+        maxDelta,
+        Math.abs(tx - st.cur[i].x),
+        Math.abs(st.cur[i].x - st.trail[i].x),
+        Math.abs(st.cur[i].y - st.trail[i].y)
       );
-      const edgeFactor = clampNum(1 - edgeDist / edgeRange, 0.3, 1);
+    }
+    st.main.setAttribute("d", smoothPath(st.cur));
+    st.echo.setAttribute("d", smoothPath(st.trail));
+    if (!st.cursor && maxDelta < 0.08) {
+      st.main.setAttribute("d", smoothPath(st.rest));
+      st.echo.setAttribute("d", smoothPath(st.rest));
+      el.classList.remove("water-live");
+      // Hanya lepas cursor jika tak ada card air lain yang di-hover
+      if (!document.querySelector("[data-water]:hover")) {
+        document.body.classList.remove("cursor-water");
+      }
+      st.raf = 0;
+      return;
+    }
+    st.raf = requestAnimationFrame(() => frame(el, st));
+  }
 
-      gsap.to(el, {
-        x: nx * strength * edgeFactor,
-        y: ny * strength * edgeFactor,
-        rotation: nx * 1.2 * edgeFactor,
-        transformPerspective: 800,
-        duration: 0.35,
-        ease: "power3.out",
-        overwrite: "auto",
-      });
+  const rel = (el: HTMLElement, e: MouseEvent): Pt => {
+    const r = el.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-water]").forEach((el) => {
+    if (el.dataset.wInit) return; // tahan HMR reboot
+    el.dataset.wInit = "1";
+    el.addEventListener("mouseenter", (e) => {
+      const st = ensureState(el);
+      if (!st) return;
+      st.cursor = rel(el, e);
+      document.body.classList.add("cursor-water");
+      el.classList.add("water-live");
+      if (!st.raf) st.raf = requestAnimationFrame(() => frame(el, st));
     });
-
-    el.addEventListener("mouseenter", () => {
-      document.body.classList.add("cursor-repel");
+    el.addEventListener("mousemove", (e) => {
+      const st = states.get(el);
+      if (!st) return;
+      st.cursor = rel(el, e);
     });
     el.addEventListener("mouseleave", () => {
-      document.body.classList.remove("cursor-repel");
-      gsap.to(el, {
-        x: 0,
-        y: 0,
-        rotation: 0,
-        duration: 0.8,
-        ease: "elastic.out(1, 0.45)",
-        overwrite: "auto",
-      });
+      const st = states.get(el);
+      if (!st) return;
+      st.cursor = null; // loop meluruhkan kembali ke bentuk semula
+    });
+  });
+
+  // Geometri disegarkan bila viewport berubah
+  window.addEventListener("resize", () => {
+    states.forEach((st, el) => {
+      if (!el.classList.contains("water-live")) states.delete(el);
     });
   });
 }
@@ -273,60 +416,81 @@ function initScrubHeading() {
   });
 }
 
-/* ======== HORIZONTAL SCROLL (PIN RAPI, ANTI-SUSUL) ======== */
+/* ======== HORIZONTAL SCROLL (STICKY + VANILLA, TANPA PIN) ========
+   Strip kartu sticky fullscreen; posisi track mengikuti progres vertikal
+   via scroll listener biasa. Tanpa ScrollTrigger-pin sehingga kebal
+   duplikasi/HMR dan tetap jalan berdampingan dengan Lenis. */
 function initHorizontalScroll() {
-  const mm = gsap.matchMedia();
+  document.querySelectorAll<HTMLElement>("[data-h-tall]").forEach((outer) => {
+    const sticky = outer.querySelector<HTMLElement>("[data-h-viewport]");
+    const track = outer.querySelector<HTMLElement>("[data-h-track]");
+    if (!sticky || !track) return;
 
-  // Desktop: pin section, track jalan penuh sebelum pin dilepas
-  mm.add("(min-width: 768px)", () => {
-    document.querySelectorAll<HTMLElement>("[data-h-wrap]").forEach((wrap) => {
-      const viewport = wrap.querySelector<HTMLElement>("[data-h-viewport]") ?? wrap;
-      const track = wrap.querySelector<HTMLElement>("[data-h-track]");
-      if (!track) return;
-      const panels = Array.from(track.querySelectorAll<HTMLElement>("[data-h-panel]"));
+    const mq = window.matchMedia("(max-width: 767px)");
 
-      const getDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+    const layout = () => {
+      const native = mq.matches || prefersReduced;
+      outer.classList.toggle("h-native", native);
+      if (native) {
+        outer.style.height = "";
+        track.style.transform = "";
+        return 0;
+      }
+      const dist = Math.max(0, track.scrollWidth - sticky.clientWidth);
+      outer.style.height = `${Math.round(window.innerHeight + dist)}px`;
+      return dist;
+    };
 
-      gsap.to(track, {
-        x: () => -getDistance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrap,
-          start: "top top",
-          // Jarak scroll = lebar sisa track + sedikit buffer agar tuntas, lalu pin dilepas.
-          // Ini yang mencegah section berikutnya menyusul sebelum horizontal selesai.
-          end: () => "+=" + (getDistance() + window.innerHeight * 0.2),
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+    let dist = layout();
+
+    const update = () => {
+      if (outer.classList.contains("h-native")) return;
+      const total = outer.offsetHeight - window.innerHeight;
+      if (total <= 0 || dist <= 0) return;
+      const top = outer.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, -top / total));
+      track.style.transform = `translate3d(${(-p * dist).toFixed(1)}px, 0, 0)`;
+    };
+
+    let ticking = false;
+    const requestUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        update();
       });
+    };
 
-      // Panel pop-in ringan saat track bergerak (tanpa containerAnimation agar stabil)
-      panels.forEach((panel, i) => {
-        gsap.fromTo(
-          panel,
-          { y: 36, rotation: i % 2 === 0 ? -1.2 : 1.2 },
-          {
-            y: 0,
-            rotation: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: { trigger: wrap, start: "top 75%", once: true },
-          }
-        );
+    // Listener window dipasang sekali (tahan HMR reboot); Lenis dibuat ulang tiap boot.
+    if (!outer.dataset.hInit) {
+      outer.dataset.hInit = "1";
+      window.addEventListener("scroll", requestUpdate, { passive: true });
+      window.addEventListener("resize", () => {
+        dist = layout();
+        requestUpdate();
       });
-    });
-  });
-
-  // Mobile: kembalikan ke swipe native, pastikan tidak ada sisa transform
-  mm.add("(max-width: 767px)", () => {
-    gsap.set("[data-h-track]", { x: 0, clearProps: "transform" });
+      window.addEventListener("load", () => {
+        dist = layout();
+        update();
+      });
+      if (mq.addEventListener) {
+        mq.addEventListener("change", () => {
+          dist = layout();
+          requestUpdate();
+        });
+      }
+    } else {
+      dist = layout();
+    }
+    if (lenis) lenis.on("scroll", requestUpdate);
+    update();
   });
 }
 
-/* ======== HERO SCROLL OUT (RAPI, TIDAK HILANG TIBA-TIBA) ======== */
+/* ======== HERO SCROLL OUT (GRUP KOMPAK, ANTI-TUMPUK) ========
+   Semua item bergerak BERSAMAAN (tanpa stagger) dan pendek saja,
+   sehingga tombol tak akan terselip di bawah teks saat scroll. */
 function initHeroScroll() {
   const hero = document.querySelector<HTMLElement>("#top");
   if (!hero || prefersReduced) return;
@@ -334,22 +498,22 @@ function initHeroScroll() {
     hero.querySelector<HTMLElement>(".flex-wrap.items-center.gap-3.mb-7"),
     hero.querySelector<HTMLElement>("h1"),
     hero.querySelector<HTMLElement>('p[data-reveal]'),
-    hero.querySelector<HTMLElement>('.mt-9.flex'),
-    hero.querySelector<HTMLElement>('.grid-cols-3'),
-    hero.querySelector<HTMLElement>('.border-y-2'),
+    hero.querySelector<HTMLElement>(".mt-7.flex"),
+    hero.querySelector<HTMLElement>("aside"),
+    hero.querySelector<HTMLElement>(".grid-cols-3"),
+    hero.querySelector<HTMLElement>(".border-y-2"),
   ].filter(Boolean) as HTMLElement[];
   if (!items.length) return;
 
-  // Konten parallax keluar ke atas + fade, selesai tepat saat hero habis (bukan "max")
+  // Grup kompak: geser dikit + fade, selesai tepat saat hero habis
   gsap.to(items, {
-    y: -70,
+    y: -32,
     opacity: 0,
     ease: "none",
-    stagger: 0.08,
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: "bottom 30%",
+      end: "bottom 25%",
       scrub: true,
     },
   });
@@ -570,6 +734,9 @@ function initMobileMenu() {
   const menu = document.querySelector("[data-mobile-menu]");
   const lines = document.querySelectorAll("[data-menu-line-1], [data-menu-line-2]");
   if (!toggle || !menu) return;
+  // Cegah dobel-listener saat HMR reboot (dobel toggle = menu tak bisa dibuka)
+  if (toggle.hasAttribute("data-mm-init")) return;
+  toggle.setAttribute("data-mm-init", "1");
   const open = () => {
     menu.classList.remove("hidden"); menu.classList.add("flex");
     menu.setAttribute("aria-hidden", "false");
@@ -597,11 +764,20 @@ function initMobileMenu() {
 
 /* ======== BOOT ======== */
 function boot() {
+  // Idempoten: bersihkan sisa boot sebelumnya (penting untuk HMR dev-server
+  // agar ScrollTrigger/Lenis tidak menumpuk dan saling melawan).
+  ScrollTrigger.getAll().forEach((t) => t.kill());
+  if (lenis) {
+    lenis.destroy();
+    lenis = null;
+  }
+
   initHeader();
   initReveals();
   initMobileMenu();
   initSplitText();
   initLineGrow();
+  initHorizontalScroll(); // atur sendiri mode reduced/mobile → selalu dipanggil
 
   if (prefersReduced) {
     ScrollTrigger.refresh();
@@ -611,7 +787,7 @@ function boot() {
   initLenis();
   initCursor();
   initMagnetic();
-  initRepel();
+  initWaterLine();
   initCounters();
   initParallax();
   initParallaxImg();
@@ -620,13 +796,12 @@ function boot() {
   initCta();
   initMarqueeVelocity();
   initScrubHeading();
-  initHorizontalScroll();
   initHeroScroll();
   initBigText();
   initOverlapStack();
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
-  // Refresh ulang setelah gambar/font selesai agar pin & sticky presisi
+  // Refresh ulang setelah gambar/font selesai agar sticky presisi
   window.addEventListener("load", () => ScrollTrigger.refresh());
 }
 

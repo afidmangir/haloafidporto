@@ -8,39 +8,40 @@ const stats = [
 const highlights = ["WEBSITE", "SISTEM INFO", "SEO & GEO", "SOLUSI AI", "SUPPORT"];
 ---
 
-<section id="top" class="relative overflow-hidden pt-36 md:pt-44 pb-14">
+<section id="top" class="relative overflow-hidden pt-28 md:pt-36 pb-12">
   <!-- Moving pattern bg -->
   <div class="absolute inset-0 -z-10" aria-hidden="true" data-parallax="0.18"
     style="background-image:url('/images/pattern.svg'); background-size:220px 220px; opacity:0.16;"
   ></div>
 
   <div class="container-site">
-    <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-      <div class="max-w-4xl">
+    <div class="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl min-w-0">
         <div class="flex flex-wrap items-center gap-3 mb-7" data-reveal>
           <span class="tag !bg-[var(--color-yellow)]">🇮🇩 Indonesia</span>
           <span class="tag !bg-white">💼 30+ project kelar</span>
           <span class="tag !bg-[var(--color-green)]">🤝 Ngobrol dulu, gratis</span>
         </div>
 
-        <h1 class="display-hero text-[14vw] sm:text-6xl md:text-7xl xl:text-[5.8rem]">
+        <h1 class="display-hero text-[12vw] sm:text-5xl md:text-6xl xl:text-[4.3rem]">
           <span class="hero-3d"><span class="hero-3d-in">Bukan cuma</span></span>
-          <span class="hero-3d"><span class="hero-3d-in">kelihatan</span></span>
+          <span class="hero-3d"><span class="hero-3d-in">kelihatan,</span></span>
+          <span class="hero-3d"><span class="hero-3d-in">tapi beneran</span></span>
           <span class="hero-3d">
             <span class="hero-3d-in relative inline-block">
-              <span class="relative z-[1] text-[var(--color-accent)]">tapi beneran profesional.</span>
+              <span class="relative z-[1] text-[var(--color-accent)]">profesional.</span>
               <svg class="absolute -bottom-2 left-0 w-full z-0" viewBox="0 0 200 14" aria-hidden="true"><path d="M3 10C50 3 150 3 197 10" stroke="#ffd43b" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
             </span>
           </span>
         </h1>
 
-        <p class="mt-7 max-w-xl text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.2s">
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.2s">
           Fokus saya bukan bikin web biar kelihatan profesional doang.
           Tapi bikin workflow bisnismu lebih gampang dan efisien — orderan ketata,
           data rapi, kerjaan berulang kepangkas. Website, sistem, sampai AI yang beneran kepake harian.
         </p>
 
-        <div class="mt-9 flex flex-wrap items-center gap-4" data-reveal style="--reveal-delay:0.3s">
+        <div class="mt-7 flex flex-wrap items-center gap-4" data-reveal style="--reveal-delay:0.3s">
           <a href="#work" class="btn btn-primary" data-magnetic>
             🔥 Lihat hasilnya
           </a>
@@ -51,22 +52,51 @@ const highlights = ["WEBSITE", "SISTEM INFO", "SEO & GEO", "SOLUSI AI", "SUPPORT
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="grid grid-cols-3 gap-4 lg:gap-6" data-reveal style="--reveal-delay:0.35s">
-        {stats.map((s, i) => (
-          <div class={`card card-hover ${i === 0 ? "!bg-[var(--color-yellow)]" : i === 1 ? "!bg-white" : "!bg-[var(--color-green)]"} px-5 py-4 text-center`} data-repel="10">
-            <span class="display-hero block text-3xl">
-              <span data-counter={s.value}>0</span>
-              <span class="text-[var(--color-accent)]">{s.suffix}</span>
-            </span>
-            <span class="mt-1 block text-[0.68rem] font-bold uppercase tracking-wider text-[var(--color-ink-soft)]">{s.label}</span>
+      <!-- Visual kanan (desktop saja): kolase gambar + animasi -->
+      <aside class="relative hidden w-[340px] shrink-0 select-none lg:block xl:w-[380px]" data-reveal="scale" style="--reveal-delay:0.25s" aria-label="Contoh hasil kerja">
+        <!-- Bentuk dekoratif belakang -->
+        <div class="absolute -top-10 -right-4 h-44 w-44 rounded-3xl border-2 border-[var(--color-ink)] bg-[var(--color-yellow)] rotate-6" data-float aria-hidden="true"></div>
+        <div class="absolute -bottom-8 -left-8 h-28 w-28 rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-pink)]" data-float aria-hidden="true"></div>
+        <div class="absolute top-1/2 -right-8 h-16 w-16 rotate-45 border-2 border-[var(--color-ink)] bg-[var(--color-green)]" data-float aria-hidden="true"></div>
+
+        <!-- Kartu utama -->
+        <div class="card relative z-[1] -rotate-2 overflow-hidden bg-white" data-water data-parallax-img>
+          <div data-img-reveal>
+            <img src="/images/kampung-mangir-digital.svg" alt="Contoh website profil digital" class="h-52 w-full object-cover" loading="eager" />
           </div>
-        ))}
-      </div>
+          <div class="flex items-center justify-between border-t-2 border-[var(--color-ink)] px-4 py-3">
+            <span class="tag !bg-[var(--color-green)]">Website</span>
+            <span class="text-xs font-bold text-[var(--color-ink-soft)]">Kampung Mangir ↗</span>
+          </div>
+        </div>
+
+        <!-- Kartu kecil menumpuk -->
+        <div class="card relative z-[2] ml-auto -mt-10 mr-4 w-60 rotate-3 overflow-hidden !bg-[var(--color-sky)]" data-water data-float>
+          <img src="/images/faast-penerbangan.svg" alt="Contoh website edukasi" class="h-28 w-full object-cover" loading="lazy" />
+          <p class="border-t-2 border-[var(--color-ink)] bg-white px-4 py-2.5 text-xs font-bold">FAAST Penerbangan ✈️</p>
+        </div>
+
+        <!-- Chip melayang -->
+        <span class="tag absolute -left-8 top-8 z-[3] !bg-white" data-float>⚡ Respon 1×24 jam</span>
+        <span class="tag absolute -right-3 bottom-20 z-[3] !bg-[var(--color-yellow)]" data-float>✅ Workflow beres</span>
+      </aside>
+    </div>
+
+    <!-- Stats -->
+    <div class="mt-10 grid grid-cols-3 gap-4" data-reveal style="--reveal-delay:0.35s">
+      {stats.map((s, i) => (
+        <div class={`card card-hover ${i === 0 ? "!bg-[var(--color-yellow)]" : i === 1 ? "!bg-white" : "!bg-[var(--color-green)]"} px-5 py-4 text-center`} data-water>
+          <span class="display-hero block text-3xl">
+            <span data-counter={s.value}>0</span>
+            <span class="text-[var(--color-accent)]">{s.suffix}</span>
+          </span>
+          <span class="mt-1 block text-[0.68rem] font-bold uppercase tracking-wider text-[var(--color-ink-soft)]">{s.label}</span>
+        </div>
+      ))}
     </div>
 
     <!-- Highlight strip -->
-    <div class="mt-12 flex flex-wrap items-center gap-x-5 gap-y-3 border-y-2 border-[var(--color-ink)] py-4" data-reveal style="--reveal-delay:0.4s">
+    <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 border-y-2 border-[var(--color-ink)] py-4" data-reveal style="--reveal-delay:0.4s">
       <span class="text-sm font-bold uppercase tracking-wider">Yang bisa dibantu:</span>
       <div class="flex flex-wrap gap-2">
         {highlights.map((h) => (
