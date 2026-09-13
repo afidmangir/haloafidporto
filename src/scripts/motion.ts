@@ -546,10 +546,45 @@ function initHorizontalScroll() {
       applyProgress(p);
     };
 
+    let stMain: ScrollTrigger | null = null;
+    const stPanels: ScrollTrigger[] = [];
+    const panels = track.querySelectorAll<HTMLElement>("[data-h-panel]");
+
+    const killPanelFX = () => {
+      stPanels.splice(0).forEach((st) => st.kill());
+      if (stMain) { stMain.kill(); stMain = null; }
+      gsap.set(panels, { y: 0, clearProps: "transform" });
+    };
+
+    const buildDesktopFX = () => {
+      // Otomatis di semua ukuran layar (termasuk mobile): vertical scroll
+      // menggerakkan kartu horizontal. Nonaktif hanya bila reduced-motion.
+      if (prefersReduced || stMain) return;
+      stMain = ScrollTrigger.create({
+        trigger: outer,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+        onUpdate: (self) => applyProgress(self.progress),
+      });
+      // parallax subtle on cards — mengikuti pin yang sama (mobile + desktop)
+      panels.forEach((panel, idx) => {
+        const tween = gsap.fromTo(panel, { y: idx % 2 === 0 ? 8 : -6 }, {
+          y: idx % 2 === 0 ? -8 : 6,
+          ease: "none",
+          scrollTrigger: { trigger: outer, start: "top top", end: "bottom bottom", scrub: true },
+        });
+        const st = tween.scrollTrigger as ScrollTrigger | undefined;
+        if (st) stPanels.push(st);
+      });
+    };
+
     const layout = () => {
-      const native = mq.matches || prefersReduced;
+      // h-native hanya untuk reduced-motion. Mobile tetap pakai pin otomatis.
+      const native = prefersReduced;
       outer.classList.toggle("h-native", native);
       if (native) {
+        killPanelFX();
         outer.style.height = "";
         track.style.transform = "";
         if (bar) bar.style.width = "0%";
@@ -560,6 +595,7 @@ function initHorizontalScroll() {
       // tinggi outer = viewport + jarak horizontal (1:1 mapping)
       const h = Math.max(window.innerHeight + dist, window.innerHeight * 1.1);
       outer.style.height = `${Math.round(h)}px`;
+      buildDesktopFX();
       update();
     };
 
@@ -599,27 +635,10 @@ function initHorizontalScroll() {
       layout();
     }
     if (lenis) lenis.on("scroll", requestUpdate);
-    // ScrollTrigger sebagai penggerak utama — sinkron dengan Lenis via ScrollTrigger.update,
-    // sehingga pin sticky tetap di tengah layar selama outer di-scroll
-    if (!prefersReduced && !mq.matches) {
-      ScrollTrigger.create({
-        trigger: outer,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-        onUpdate: (self) => applyProgress(self.progress),
-      });
-    }
+    // ScrollTrigger sebagai penggerak utama — semua ukuran layar (mobile + desktop).
+    // (Dibuat di dalam buildDesktopFX agar bisa di-kill saat reduced-motion.)
+    buildDesktopFX();
     requestUpdate();
-    // parallax subtle on cards
-    track.querySelectorAll<HTMLElement>("[data-h-panel]").forEach((panel, idx) => {
-      if (prefersReduced) return;
-      gsap.fromTo(panel, { y: idx % 2 === 0 ? 8 : -6 }, {
-        y: idx % 2 === 0 ? -8 : 6,
-        ease: "none",
-        scrollTrigger: { trigger: outer, start: "top top", end: "bottom bottom", scrub: true },
-      });
-    });
   });
 }
 

@@ -329,28 +329,37 @@ html.js [data-hero-reveal].is-in {
   will-change: width;
 }
 @media (max-width: 767px) {
-  .h-tall { height: auto !important; }
-  .h-sticky { position: static; height: auto; display: block; overflow: visible; background: transparent; }
-  .h-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.5rem;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .h-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  /* Mobile: otomatis seperti desktop (vertical scroll menggerakkan kartu).
+     Bukan swipe manual — jadi tidak ada scroll-snap / overflow-x auto di sini. */
+  .h-sticky { height: 100svh; min-height: 100svh; }
+  .h-scroll { overflow: hidden; }
   .h-track { padding-inline: 1.5rem; padding-right: 1.5rem; }
-  .h-panel { width: min(82vw, 340px); scroll-snap-align: center; }
-  .h-progress { display: none; }
+  .h-panel { width: min(82vw, 340px); }
+  .h-progress { display: block; left: 1.5rem; right: 1.5rem; bottom: 1rem; }
+}
+/* Hero CTA — mobile: 1 baris, sedikit lebih kecil */
+@media (max-width: 767px) {
+  .hero-cta { flex-wrap: nowrap; gap: 0.625rem; }
+  .hero-cta .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: 0.7rem 0.6rem;
+    font-size: 0.75rem;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
 }
 /* Mode native (reduced-motion): swipe biasa, tanpa sticky */
 .h-tall.h-native { height: auto !important; }
-.h-tall.h-native .h-sticky { position: static; height: auto; display: block; overflow: visible; }
+.h-tall.h-native .h-sticky { position: static; height: auto; display: block; overflow: visible; background: transparent; }
 .h-tall.h-native .h-scroll {
   overflow-x: auto;
   overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 1.5rem;
+  touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
