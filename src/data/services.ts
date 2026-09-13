@@ -21,12 +21,12 @@ export const services: Service[] = [
     id: "search",
     title: "SEO & GEO",
     description:
-      "Biar brand kamu gampang ditemuin — di Google, YouTube, sampai AI kayak ChatGPT & Gemini. Fondasi teknis + konten yang bener.",
+      "Biar brand kamu gampang ditemuin — di Google, YouTube, sampai Automation seperti ChatGPT & Gemini. Fondasi teknis + konten yang bener.",
   },
   {
-    id: "ai",
-    title: "Solusi AI",
+    id: "automation",
+    title: "Automation",
     description:
-      "Integrasi AI yang fokus ke kebutuhan nyata: otomasi, asisten, content workflow. Bukan sekadar numpang tren.",
+      "Integrasi Automation yang fokus ke kebutuhan nyata: otomasi, asisten, content workflow. Bukan sekadar numpang tren.",
   },
 ];

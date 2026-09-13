@@ -1,24 +1,75 @@
 ---
-// Big scrolling statement with parallax + sticky
-const line1 = "Website bukan sekadar";
-const line2 = "hiasan digital.";
+const line1 = "Website harus";
+const line2 = "menghasilkan.";
 ---
 
-<section class="py-24 md:py-36 overflow-hidden" data-bigtext-section>
-  <div class="container-site">
-    <div class="bigtext" data-bigtext>
-      <span class="block" data-big-line="0">
-        <span class="text-outline">{line1}</span>
-      </span>
-      <span class="block text-[var(--color-accent)]" data-big-line="1">
-        {line2}
-        <span class="align-middle inline-block ml-5 text-[0.9em]">👇</span>
-      </span>
+<!-- FILOSOFI — sticky storytelling + scroll-driven timeline -->
+<div class="bigtext-sticky-wrap" aria-hidden="false">
+  <section id="bigtext" class="bigtext-sticky" data-bigtext-section aria-label="Filosofi">
+    <!-- BG decor -->
+    <div class="bigtext-bg" aria-hidden="true">
+      <div class="bigtext-blob bigtext-blob-a"></div>
+      <div class="bigtext-blob bigtext-blob-b"></div>
+      <div class="bigtext-grid"></div>
+      <span class="bigtext-giant" data-big-giant data-i18n="big.giant">HASIL • HASIL • HASIL</span>
     </div>
-    <p class="mt-8 max-w-lg text-lg text-[var(--color-ink-soft)]" data-reveal>
-      Website yang bagus harus <strong>bantu bisnismu jalan</strong> — dapet
-      leads, naikin kepercayaan, dan bikin pelanggan gampang nemuin kamu.
-      Nggak ada drama, yang ada progress.
-    </p>
-  </div>
-</section>
+    <div class="container-site w-full relative z-[1]">
+      <div class="grid gap-8 md:gap-10 md:grid-cols-[1.1fr_0.9fr] items-center">
+        <!-- Kiri: statement -->
+        <div>
+          <p class="kicker mb-3" data-big-kicker><span class="bigtext-dot"></span><span data-i18n="big.kicker">Filosofi</span></p>
+          <div class="bigtext !text-[clamp(2.4rem,6vw,5rem)] leading-[0.92]" data-bigtext>
+            <span class="block overflow-hidden pb-[0.08em] -mb-[0.08em]" data-big-line="0">
+              <span class="block text-[var(--color-ink)]" data-big-line-in="0" data-i18n="big.l1">{line1}</span>
+            </span>
+            <span class="block overflow-hidden pb-[0.32em] -mb-[0.32em]" data-big-line="1">
+              <span class="relative z-[1] inline-block text-[var(--color-accent)]" data-big-line-in="1" data-i18n="big.l2">{line2}
+                <svg class="absolute -bottom-[0.18em] left-0 z-0 h-[0.15em] w-full" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden="true"><path data-big-underline d="M2 9C40 3 160 3 198 9" stroke="#ffd43b" stroke-width="5" stroke-linecap="round"/></svg>
+              </span>
+            </span>
+          </div>
+          <p class="mt-5 max-w-[42ch] text-[1.03rem] leading-relaxed text-[var(--color-ink-soft)]" data-big-desc>
+            <span data-i18n="big.desc1">Bukan sekadar hiasan — </span><strong data-i18n="big.desc2">mesin pertumbuhan.</strong><span data-i18n="big.desc3"> Mendatangkan leads, membangun kepercayaan, dan memudahkan pelanggan menemukanmu.</span>
+          </p>
+          <p class="mt-3 max-w-[42ch] text-sm leading-relaxed text-[var(--color-muted)]" data-big-sub data-i18n="big.sub">
+            Tanpa drama. Fokus pada hasil yang terukur.
+          </p>
+          <div class="mt-5 flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[var(--color-muted)]" data-big-hint>
+            <span class="bigtext-scroll-hint" data-i18n="big.hint">Scroll</span>
+            <span class="bigtext-scroll-line"><span data-big-scroll-fill></span></span>
+          </div>
+        </div>
+
+        <!-- Kanan: 3 poin — masuk satu per satu mengikuti scroll -->
+        <div class="grid gap-3" data-big-cards>
+          <div class="card !bg-[var(--color-yellow)] p-4 flex gap-3 items-center bigtext-card-0" data-big-card>
+            <span data-big-card-icon class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white border-2 border-[var(--color-ink)] text-sm font-bold shadow-[2px_2px_0_0_var(--color-ink)]">✓</span>
+            <div class="min-w-0">
+              <p class="text-sm font-bold leading-tight" data-i18n="big.c1t">Leads & order</p>
+              <p class="text-[0.8rem] leading-snug text-[var(--color-ink-soft)]" data-i18n="big.c1d">CTA jelas, flow simpel</p>
+            </div>
+            <span class="ml-auto text-[0.65rem] font-bold text-[var(--color-ink)]/40">01</span>
+          </div>
+          <div class="card bg-white p-4 flex gap-3 items-center bigtext-card-1" data-big-card>
+            <span data-big-card-icon class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--color-green)] border-2 border-[var(--color-ink)] text-sm font-bold shadow-[2px_2px_0_0_var(--color-ink)]">◎</span>
+            <div class="min-w-0">
+              <p class="text-sm font-bold leading-tight" data-i18n="big.c2t">Kepercayaan</p>
+              <p class="text-[0.8rem] leading-snug text-[var(--color-ink-soft)]" data-i18n="big.c2d">Rapi, cepat, meyakinkan</p>
+            </div>
+            <span class="ml-auto text-[0.65rem] font-bold text-[var(--color-ink)]/40">02</span>
+          </div>
+          <div class="card bg-white p-4 flex gap-3 items-center bigtext-card-2" data-big-card>
+            <span data-big-card-icon class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--color-sky)] border-2 border-[var(--color-ink)] text-sm font-bold shadow-[2px_2px_0_0_var(--color-ink)]">◈</span>
+            <div class="min-w-0">
+              <p class="text-sm font-bold leading-tight" data-i18n="big.c3t">Mudah ditemukan</p>
+              <p class="text-[0.8rem] leading-snug text-[var(--color-ink-soft)]" data-i18n="big.c3d">SEO & GEO beres</p>
+            </div>
+            <span class="ml-auto text-[0.65rem] font-bold text-[var(--color-ink)]/40">03</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- progress bawah -->
+    <div class="bigtext-progress" aria-hidden="true"><span data-big-progress></span></div>
+  </section>
+</div>

@@ -1,0 +1,123 @@
+---
+import { site } from "../data/site";
+---
+
+<!-- Lightbox preview gambar project -->
+<div
+  id="project-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center p-4 md:p-8"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Preview gambar project"
+  aria-hidden="true"
+>
+  <div class="absolute inset-0 bg-black/70" data-modal-close aria-hidden="true"></div>
+  <div class="card relative z-[1] w-full max-w-3xl overflow-hidden bg-white !rounded-2xl" data-modal-panel>
+    <div class="relative bg-[var(--color-canvas)]">
+      <img id="project-modal-img" src="" alt="" class="max-h-[62vh] w-full object-contain" />
+      <span id="project-modal-cat" class="absolute left-4 top-4 tag !bg-[var(--color-yellow)]"></span>
+      <button
+        type="button"
+        class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border-2 border-[var(--color-ink)] bg-white text-lg font-bold shadow-[3px_3px_0_0_var(--color-ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
+        data-modal-close
+        aria-label="Tutup preview"
+      >✕</button>
+    </div>
+    <div class="p-6 md:p-7">
+      <h3 id="project-modal-title" class="display-section text-xl md:text-2xl"></h3>
+      <p id="project-modal-desc" class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)]"></p>
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn-primary !py-2.5 !px-5 text-xs" data-i18n="modal.ask">
+          Tanyakan project ini →
+        </a>
+        <button type="button" class="btn btn-dark !py-2.5 !px-5 text-xs" data-modal-close data-i18n="modal.close">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { projEn } from "../data/i18n";
+
+  const getLang = () =>
+    window.__haloafidLang ?? (localStorage.getItem("haloafid-lang") === "en" ? "en" : "id");
+
+  function resolveContent(slug, fallback) {
+    const en = (slug && projEn[slug]) || {};
+    const isEn = getLang() === "en";
+    return {
+      title: isEn && en.title ? en.title : fallback.title,
+      category: isEn && en.category ? en.category : fallback.category,
+      desc: isEn && en.description ? en.description : fallback.desc,
+    };
+  }
+
+  function initModal() {
+    const modal = document.getElementById("project-modal");
+    if (!modal) return;
+    if (modal.dataset.init) return;
+    modal.dataset.init = "1";
+    const img = document.getElementById("project-modal-img");
+    const title = document.getElementById("project-modal-title");
+    const cat = document.getElementById("project-modal-cat");
+    const desc = document.getElementById("project-modal-desc");
+    let current = null;
+
+    function render() {
+      if (!current) return;
+      const c = resolveContent(current.slug, current.fallback);
+      img.src = current.image || "";
+      img.alt = c.title || "Preview project";
+      title.textContent = c.title || "";
+      cat.textContent = c.category || "";
+      cat.style.display = c.category ? "" : "none";
+      desc.textContent = c.desc || "";
+    }
+    function open(trigger) {
+      current = {
+        slug: trigger.getAttribute("data-modal-slug"),
+        image: trigger.getAttribute("data-modal-image"),
+        fallback: {
+          title: trigger.getAttribute("data-modal-title"),
+          category: trigger.getAttribute("data-modal-category"),
+          desc: trigger.getAttribute("data-modal-desc"),
+        },
+      };
+      render();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+    function close() {
+      current = null;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      img.src = "";
+    }
+
+    document.addEventListener("click", (e) => {
+      const trigger = e.target.closest("[data-modal-image]");
+      if (trigger) {
+        e.preventDefault();
+        open(trigger);
+        return;
+      }
+      if (e.target.closest("[data-modal-close]")) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) close();
+    });
+    window.addEventListener("haloafid:lang", () => {
+      if (current && !modal.classList.contains("hidden")) render();
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initModal);
+  else initModal();
+  document.addEventListener("astro:page-load", initModal);
+</script>

@@ -3,7 +3,7 @@ const items = [
   "Website Cepat ⚡",
   "Sistem Informasi 🗂️",
   "SEO & GEO 🔍",
-  "Solusi AI 🤖",
+  "Automation ⚙️",
   "Bikin Bisnis Naik 📈",
   "Garansi Rapi ✨",
 ];
@@ -14,8 +14,8 @@ const items = [
     <div class="marquee-track">
       {[0, 1].map((copy) => (
         <div class="flex shrink-0 items-center">
-          {items.map((item) => (
-            <span class="flex items-center gap-6 px-6 font-[var(--font-display)] text-base font-bold uppercase tracking-wider">
+          {items.map((item, i) => (
+            <span class="flex items-center gap-6 px-6 font-[var(--font-display)] text-base font-bold uppercase tracking-wider" data-i18n={`marq.${i + 1}`}>
               {item}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 2v20M2 12h20"/></svg>
             </span>

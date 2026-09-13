@@ -10,8 +10,8 @@
   --color-canvas: #f7f1e3;
   --color-surface: #ffffff;
   --color-ink: #141414;
-  --color-ink-soft: #454440;
-  --color-muted: #7a7466;
+  --color-ink-soft: #2f2e2b;
+  --color-muted: #6b665c;
   --color-line: #141414;
   --color-accent: #2563eb;
   --color-accent-deep: #1d4ed8;
@@ -21,8 +21,9 @@
   --color-orange: #ff9f1c;
   --color-sky: #a5d8ff;
 
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Sora", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 html { scroll-behavior: auto; }
@@ -34,7 +35,8 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* overflow-x:hidden MEMATIKAN position:sticky — pakai clip agar sticky tetap jalan */
+  overflow-x: clip;
 }
 
 ::selection { background: var(--color-ink); color: var(--color-yellow); }
@@ -49,30 +51,31 @@ body {
   .container-site { padding-inline: 2rem; }
 }
 
-/* ---------- Typography ---------- */
+/* ---------- Typography — PROFESSIONAL ---------- */
 .kicker {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--color-ink);
 }
-.kicker::after { content: "→"; }
+.kicker::after { content: "→"; color: var(--color-accent); }
 
 .display-hero {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.94;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 .display-section {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1.02;
   text-transform: uppercase;
 }
@@ -161,21 +164,24 @@ body {
 }
 
 /* ========== REVEAL (hanya disembunyikan bila JS aktif) ==========
-   Tanpa JS semua konten tetap tampil — anti halaman kosong. */
+   Tanpa JS semua konten tetap tampil — anti halaman kosong.
+   Hero pakai data-hero-reveal agar tidak tergantung scroll. */
 [data-reveal] { opacity: 1; transform: none; }
 html.js [data-reveal] {
   opacity: 0;
   transform: translateY(26px);
-  transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1);
   transition-delay: var(--reveal-delay, 0s);
 }
 html.js [data-reveal].is-visible { opacity: 1; transform: none; }
-html.js [data-reveal="scale"] { transform: scale(0.92); }
+html.js [data-reveal="scale"] { transform: scale(0.96); }
 html.js [data-reveal="scale"].is-visible { transform: scale(1); }
 html.js [data-reveal="slide-right"] { transform: translateX(-30px); }
 html.js [data-reveal="slide-right"].is-visible { transform: none; }
+/* Hero items yang tadinya data-reveal — override agar tidak hidden sebelum heroIn */
+html.js #top [data-reveal] { transition-delay: 0s; }
 
-/* ========== HERO 3D ENTRANCE ========== */
+/* ========== HERO 3D ENTRANCE + IN/OUT ========== */
 .hero-3d {
   display: block;
   overflow: hidden;
@@ -192,6 +198,64 @@ html.js [data-reveal="slide-right"].is-visible { transform: none; }
 }
 @keyframes hero-3d-in {
   to { transform: rotateX(0) translateY(0); opacity: 1; }
+}
+/* Hero intro groups */
+[data-hero-reveal] {
+  opacity: 1;
+  transform: none;
+}
+html.js [data-hero-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+html.js [data-hero-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: var(--hero-delay, 0s);
+}
+
+/* Hero background — profesional */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: radial-gradient(1200px 600px at 85% -10%, rgba(37,99,235,0.08) 0%, transparent 60%),
+              radial-gradient(800px 500px at -10% 25%, rgba(255,212,59,0.14) 0%, transparent 55%),
+              linear-gradient(180deg, #fdfaf1 0%, #f7f1e3 55%, #efe8d6 100%);
+}
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(20,20,20,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,20,20,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
+}
+.hero-bg-blob {
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  right: -120px;
+  top: -140px;
+  background: radial-gradient(circle at 30% 30%, #ffd43b 0%, #ff9f1c 35%, transparent 70%);
+  opacity: 0.16;
+  filter: blur(18px);
+  border-radius: 50%;
+}
+.hero-bg-blob-2 {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  left: -80px;
+  bottom: -120px;
+  background: radial-gradient(circle at 50% 50%, #a5d8ff 0%, #2563eb 45%, transparent 70%);
+  opacity: 0.10;
+  filter: blur(22px);
+  border-radius: 50%;
 }
 
 /* ========== SCRUB WORDS ========== */
@@ -219,18 +283,20 @@ html.js [data-reveal="slide-right"].is-visible { transform: none; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-/* ========== HORIZONTAL SCROLL (STICKY, TANPA PIN) ========== */
-[data-h-wrap] { position: relative; }
-/* Tinggi .h-tall diatur JS = 100vh + sisa track (progress 1:1) */
+/* ========== HORIZONTAL SCROLL — STICKY PIN DI TENGAH LAYAR ========== */
+[data-h-wrap] { position: relative; overflow-x: clip; }
 .h-tall { position: relative; }
 .h-sticky {
   position: sticky;
   top: 0;
   height: 100svh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--color-canvas) 0%, #efe8d6 100%);
 }
 .h-scroll { position: relative; overflow: hidden; }
 .h-track {
@@ -239,13 +305,32 @@ html.js [data-reveal="slide-right"].is-visible { transform: none; }
   align-items: stretch;
   width: max-content;
   padding-inline: max(1.5rem, calc((100vw - 1240px) / 2 + 2rem));
-  padding-right: 12vw;
+  padding-right: 14vw;
   will-change: transform;
+  transform: translate3d(0,0,0);
 }
 .h-panel { flex: 0 0 auto; width: min(80vw, 400px); }
+.h-progress {
+  position: absolute;
+  left: max(1.5rem, calc((100vw - 1240px)/2 + 2rem));
+  right: max(1.5rem, calc((100vw - 1240px)/2 + 2rem));
+  bottom: 1.5rem;
+  height: 4px;
+  background: rgba(20,20,20,0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.h-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--color-ink);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+  will-change: width;
+}
 @media (max-width: 767px) {
   .h-tall { height: auto !important; }
-  .h-sticky { position: static; height: auto; display: block; overflow: visible; }
+  .h-sticky { position: static; height: auto; display: block; overflow: visible; background: transparent; }
   .h-scroll {
     overflow-x: auto;
     overflow-y: hidden;
@@ -258,6 +343,7 @@ html.js [data-reveal="slide-right"].is-visible { transform: none; }
   .h-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
   .h-track { padding-inline: 1.5rem; padding-right: 1.5rem; }
   .h-panel { width: min(82vw, 340px); scroll-snap-align: center; }
+  .h-progress { display: none; }
 }
 /* Mode native (reduced-motion): swipe biasa, tanpa sticky */
 .h-tall.h-native { height: auto !important; }
@@ -301,7 +387,7 @@ html:not(.js) .h-scroll { overflow-x: auto; }
   box-shadow: none;
   overflow: hidden;
   transform-origin: center top;
-  will-change: transform, filter;
+  will-change: transform;
 }
 .overlap-full:first-child { border-top-width: 2px; }
 .overlap-full + .overlap-full { margin-top: 0; border-top: 0; }
@@ -310,9 +396,50 @@ html:not(.js) .h-scroll { overflow-x: auto; }
   max-width: 1240px;
   margin-inline: auto;
   padding: 6rem 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 @media (min-width: 768px) {
   .overlap-full-inner { padding: 7rem 2rem; }
+}
+/* Overlay gelap: transparan -> makin gelap saat ditumpuk (bukan sebaliknya) */
+.overlap-shade {
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: opacity;
+}
+
+/* ——— Varian kompak (ringkas, tidak 100vh) ——— */
+.overlap-stack-compact { position: relative; max-width: 1240px; margin-inline: auto; padding-inline: 1.5rem; }
+@media (min-width: 768px) { .overlap-stack-compact { padding-inline: 2rem; } }
+.overlap-compact {
+  position: sticky;
+  top: 84px;
+  min-height: 132px;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-ink);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 0 var(--color-ink);
+  overflow: hidden;
+  transform-origin: center top;
+  will-change: transform;
+  margin-bottom: 0;
+}
+.overlap-compact + .overlap-compact { margin-top: 0.9rem; }
+.overlap-compact-inner {
+  width: 100%;
+  padding: 1.35rem 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .overlap-compact { min-height: 150px; top: 88px; }
+  .overlap-compact-inner { padding: 1.6rem 1.8rem; }
 }
 
 /* ========== STICKY SPLIT ========== */
@@ -353,7 +480,7 @@ html.js [data-line-grow] { transform: scaleX(0); }
 [data-cta-card] { will-change: transform; transform-origin: center center; }
 [data-float] { will-change: transform; }
 
-/* ========== BIG STATEMENT ========== */
+/* ========== BIG STATEMENT — STICKY HANYA DI DEKAT POSISI ========== */
 .bigtext {
   font-family: var(--font-display);
   font-weight: 700;
@@ -366,8 +493,104 @@ html.js [data-line-grow] { transform: scaleX(0); }
   color: transparent;
   -webkit-text-stroke: 2.5px var(--color-ink);
 }
+[data-big-card] { will-change: transform, opacity; transform-origin: center bottom; }
+html.js [data-big-card] { opacity: 0; }
+[data-big-card-icon] { will-change: transform; display: grid; }
+html.js [data-big-kicker],
+html.js [data-big-desc],
+html.js [data-big-sub],
+html.js [data-big-hint] { opacity: 0; }
+/* Wrapper memberi ruang scroll untuk timeline sticky */
+.bigtext-sticky-wrap {
+  position: relative;
+  height: 230svh;
+}
+.bigtext-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-top: 2px solid var(--color-ink);
+  border-bottom: 2px solid var(--color-ink);
+  overflow: hidden;
+  z-index: 0;
+}
+/* BG decor */
+.bigtext-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.bigtext-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(20,20,20,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,20,20,0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 30% 40%, black 40%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 30% 40%, black 40%, transparent 78%);
+}
+.bigtext-blob { position: absolute; border-radius: 50%; filter: blur(24px); }
+.bigtext-blob-a {
+  width: 480px; height: 480px; right: -140px; top: -160px;
+  background: radial-gradient(circle at 35% 35%, #ffd43b 0%, transparent 68%);
+  opacity: 0.22;
+}
+.bigtext-blob-b {
+  width: 420px; height: 420px; left: -140px; bottom: -160px;
+  background: radial-gradient(circle at 50% 50%, #a5d8ff 0%, transparent 68%);
+  opacity: 0.28;
+}
+.bigtext-giant {
+  position: absolute; bottom: 4.5rem; left: 0; white-space: nowrap;
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  font-size: clamp(4rem, 12vw, 11rem); line-height: 1; letter-spacing: -0.03em;
+  color: transparent; -webkit-text-stroke: 1.5px rgba(20,20,20,0.10);
+  will-change: transform;
+}
+.bigtext-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 999px;
+  background: var(--color-accent); margin-right: 0.1rem;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+  animation: bigtext-pulse 1.8s ease-in-out infinite;
+}
+@keyframes bigtext-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
+  50% { box-shadow: 0 0 0 7px rgba(37,99,235,0.06); }
+}
+.bigtext-scroll-hint { letter-spacing: 0.14em; }
+.bigtext-scroll-line {
+  display: inline-block; width: 72px; height: 2px; background: rgba(20,20,20,0.14);
+  border-radius: 999px; overflow: hidden; vertical-align: middle;
+}
+.bigtext-scroll-line span { display: block; height: 100%; width: 100%; background: var(--color-ink); transform: scaleX(0); transform-origin: left; }
+.bigtext-progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+  background: rgba(20,20,20,0.10);
+}
+.bigtext-progress span { display: block; height: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: left; }
+/* variasi rotasi kartu agar neo-brutal hidup */
+.bigtext-card-0 { transform: rotate(-0.6deg); }
+.bigtext-card-1 { transform: rotate(0.7deg); }
+.bigtext-card-2 { transform: rotate(-0.4deg); }
+[data-big-card]:hover { box-shadow: 7px 7px 0 0 var(--color-ink); }
+@media (max-width: 767px) {
+  .bigtext-sticky-wrap { height: auto; }
+  .bigtext-sticky { position: relative; height: auto; padding-block: 3.5rem; top: auto; }
+  html.js [data-big-kicker],
+  html.js [data-big-desc],
+  html.js [data-big-sub],
+  html.js [data-big-hint] { opacity: 1; }
+  html.js [data-big-card] { opacity: 1; }
+  .bigtext-giant { display: none; }
+}
+/* Section setelah BigText tetap normal — tidak tertutup fixed */
+#about, #services, #work, #process, #work-archive, #contact {
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-canvas);
+}
+#top { position: relative; z-index: 1; }
 
-/* ========== CUSTOM CURSOR ========== */
+/* ========== CUSTOM CURSOR — MINIMAL OUTLINE ONLY (no solid cover) ========== */
 .cursor-dot, .cursor-ring {
   display: none;
   position: fixed;
@@ -381,36 +604,41 @@ html.js [data-line-grow] { transform: scaleX(0); }
 @media (pointer: fine) {
   body.has-cursor.cursor-live .cursor-dot,
   body.has-cursor.cursor-live .cursor-ring { display: block; }
-  body.has-cursor.cursor-live, body.has-cursor.cursor-live * { cursor: none !important; }
+  /* keep native cursor visible subtle — no cursor:none to avoid losing pointer */
 }
 .cursor-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--color-accent);
-  border: 2px solid var(--color-ink);
+  width: 8px;
+  height: 8px;
+  background: var(--color-ink);
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
 }
 .cursor-ring {
-  width: 38px;
-  height: 38px;
-  border: 2px solid rgba(20,20,20,0.5);
-  transition: width 0.25s ease, height 0.25s ease, background 0.25s ease;
+  width: 34px;
+  height: 34px;
+  border: 1.8px solid rgba(20,20,20,0.42);
+  background: transparent;
+  transition: width 0.22s ease, height 0.22s ease, border-color 0.22s ease, opacity 0.22s ease;
 }
 body.cursor-active .cursor-ring {
-  width: 60px;
-  height: 60px;
-  background: var(--color-yellow);
+  width: 52px;
+  height: 52px;
+  background: transparent;
   border-color: var(--color-ink);
-  opacity: 0.9;
+  border-width: 2px;
+  opacity: 0.95;
 }
-/* Cursor saat menyentuh garis air */
+body.cursor-active .cursor-dot { background: var(--color-accent); border-color: #fff; }
+/* Cursor saat menyentuh garis air — outline accent only */
 body.cursor-water .cursor-ring {
-  width: 76px;
-  height: 76px;
-  background: var(--color-accent);
-  border-color: var(--color-ink);
-  opacity: 0.92;
+  width: 64px;
+  height: 64px;
+  background: transparent;
+  border-color: var(--color-accent);
+  border-width: 2px;
+  opacity: 0.95;
 }
-body.cursor-water .cursor-dot { background: var(--color-yellow); }
+body.cursor-water .cursor-dot { background: var(--color-accent); }
 
 /* Garis air: SVG menimpa border saat disentuh cursor */
 [data-water] { position: relative; }

@@ -1,20 +1,24 @@
 ---
-import { projects } from "../data/projects";
-const featured = projects.slice(0, 3);
+import { projects, featuredSlugs } from "../data/projects";
+const featured = featuredSlugs
+  .map((slug) => projects.find((p) => p.slug === slug))
+  .filter((p) => p !== undefined);
+const webLogikaos = projects.find((p) => p.slug === "website-logikaos");
+const sysLogikaos = projects.find((p) => p.slug === "sistem-konveksi-logikaos");
 ---
 
 <section id="work" class="py-24 md:py-32 bg-white border-y-2 border-[var(--color-ink)]">
   <div class="container-site">
     <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
       <div>
-        <p class="kicker mb-4" data-reveal>Karya pilihan</p>
-        <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
+        <p class="kicker mb-4" data-reveal data-i18n="feat.kicker">Karya pilihan</p>
+        <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal data-words="feat.h" style="--reveal-delay:0.08s">
           <span class="scrub-mask"><span class="scrub-word">Yang</span></span>{" "}
           <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">baru</span></span>{" "}
           <span class="scrub-mask"><span class="scrub-word">jadi.</span></span>
         </h2>
       </div>
-      <a href="#work-archive" class="btn btn-dark !py-2.5 !px-5 text-xs" data-reveal style="--reveal-delay:0.15s" data-magnetic>
+      <a href="#work-archive" class="btn btn-dark !py-2.5 !px-5 text-xs" data-reveal style="--reveal-delay:0.15s" data-magnetic data-i18n="feat.all">
         Lihat semua →
       </a>
     </div>
@@ -23,20 +27,90 @@ const featured = projects.slice(0, 3);
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {featured.map((p, i) => (
         <article
-          class={`card card-hover group relative overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
+          class={`card card-hover group relative flex flex-col overflow-hidden ${i === 0 ? "md:col-span-2 lg:col-span-1 lg:row-span-2" : ""} ${i === 1 ? "lg:col-span-2" : ""}`}
           data-reveal="scale"
           data-water
           style={`--reveal-delay:${i * 0.1}s`}
         >
           <span class="absolute left-5 top-4 font-[var(--font-display)] text-5xl font-bold text-[var(--color-ink)]/15 z-[1]" aria-hidden="true">0{i + 1}</span>
-          <div class={`project-img relative ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[300px]" : "aspect-[16/9]"}`} data-img-reveal data-parallax-img>
-            <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
-            <span class="absolute left-4 top-4 tag !bg-[var(--color-yellow)] z-[1]">{p.category}</span>
-          </div>
-          <div class="p-7">
-            <h3 class="display-section text-2xl mb-2.5 group-hover:text-[var(--color-accent)] transition-colors duration-200">{p.title}</h3>
-            <p class="text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2">{p.description}</p>
-            <div class="mt-5 flex flex-wrap gap-2">
+          <button
+            type="button"
+            class={`project-img relative block w-full cursor-zoom-in ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[300px]" : "aspect-[16/9]"}`}
+            data-img-reveal
+            data-modal-slug={p.slug}
+            data-modal-image={p.image}
+            data-modal-title={p.title}
+            data-modal-category={p.category}
+            data-modal-desc={p.description}
+            aria-label={`Lihat gambar ${p.title}`}
+          >
+            <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" data-parallax-img />
+            <span class="absolute left-4 top-4 tag !bg-[var(--color-yellow)] z-[1]" data-proj={p.slug} data-field="category">{p.category}</span>
+            <span class="absolute right-4 top-4 z-[1] grid h-9 w-9 place-items-center rounded-lg border-2 border-[var(--color-ink)] bg-white text-sm shadow-[2.5px_2.5px_0_0_var(--color-ink)]" aria-hidden="true">⤢</span>
+          </button>
+          <div class="flex flex-1 flex-col p-7">
+            <h3 class="display-section text-2xl mb-2.5 group-hover:text-[var(--color-accent)] transition-colors duration-200" data-proj={p.slug} data-field="title">{p.title}</h3>
+            <p class={`text-sm leading-relaxed text-[var(--color-ink-soft)] ${i === 0 ? "" : "line-clamp-2"}`} data-proj={p.slug} data-field="description">{p.description}</p>
+            {p.slug === "arkamaya-kusuma-resort-glamping" && (
+              <div class="mt-5">
+                <p class="mb-2 flex items-center gap-1.5 text-[0.68rem] font-bold uppercase tracking-wider text-[var(--color-ink-soft)]">🔍 Bukti SEO — ranking teratas Google</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    class="cursor-zoom-in overflow-hidden rounded-xl border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] transition-transform duration-200 hover:-translate-y-1"
+                    data-modal-slug="ss-ark-1"
+                    data-modal-image="/assets/porto/website-arkamaya-kusuma/ss1.png"
+                    data-modal-title="Arkamaya Kusuma — Ranking #1 Google"
+                    data-modal-category={p.category}
+                    data-modal-desc="Bukti hasil SEO: arkamayakusuma.com tampil teratas di pencarian Google untuk kata kunci 'rekomendasi villa resort untuk rombongan keluarga besar'."
+                    aria-label="Lihat bukti ranking Google 1 Arkamaya Kusuma"
+                  >
+                    <img src="/assets/porto/website-arkamaya-kusuma/ss1.png" alt="Bukti ranking Google: arkamayakusuma.com peringkat teratas untuk kata kunci villa resort rombongan" loading="lazy" class="h-28 w-full object-cover object-top" />
+                    <span class="block border-t-2 border-[var(--color-ink)] bg-[var(--color-green)] px-2 py-1.5 text-left text-[0.62rem] font-bold leading-tight">#1 Villa resort rombongan</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cursor-zoom-in overflow-hidden rounded-xl border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] transition-transform duration-200 hover:-translate-y-1"
+                    data-modal-slug="ss-ark-2"
+                    data-modal-image="/assets/porto/website-arkamaya-kusuma/ss2.png"
+                    data-modal-title="Arkamaya Kusuma — Ranking #1 Google"
+                    data-modal-category={p.category}
+                    data-modal-desc="Bukti hasil SEO: arkamayakusuma.com tampil teratas di pencarian Google untuk kata kunci 'meeting room dengan pemandangan alam Jogja'."
+                    aria-label="Lihat bukti ranking Google 2 Arkamaya Kusuma"
+                  >
+                    <img src="/assets/porto/website-arkamaya-kusuma/ss2.png" alt="Bukti ranking Google: arkamayakusuma.com peringkat teratas untuk kata kunci meeting room Jogja" loading="lazy" class="h-28 w-full object-cover object-top" />
+                    <span class="block border-t-2 border-[var(--color-ink)] bg-[var(--color-green)] px-2 py-1.5 text-left text-[0.62rem] font-bold leading-tight">#1 Meeting room Jogja</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cursor-zoom-in overflow-hidden rounded-xl border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] transition-transform duration-200 hover:-translate-y-1"
+                    data-modal-slug="ss-ark-3"
+                    data-modal-image="/assets/porto/website-arkamaya-kusuma/ss3.png"
+                    data-modal-title="Arkamaya Kusuma — Halaman Akomodasi"
+                    data-modal-category={p.category}
+                    data-modal-desc="Tampilan halaman akomodasi website Arkamaya Kusuma — pilihan menginap Tiny House dan Cabin dengan galeri visual."
+                    aria-label="Lihat tampilan halaman akomodasi Arkamaya Kusuma"
+                  >
+                    <img src="/assets/porto/website-arkamaya-kusuma/ss3.png" alt="Tampilan halaman akomodasi website Arkamaya Kusuma: pilihan menginap Tiny House dan Cabin" loading="lazy" class="h-28 w-full object-cover object-top" />
+                    <span class="block border-t-2 border-[var(--color-ink)] bg-[var(--color-sky)] px-2 py-1.5 text-left text-[0.62rem] font-bold leading-tight">Halaman akomodasi</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cursor-zoom-in overflow-hidden rounded-xl border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] transition-transform duration-200 hover:-translate-y-1"
+                    data-modal-slug="ss-ark-4"
+                    data-modal-image="/assets/porto/website-arkamaya-kusuma/ss4.png"
+                    data-modal-title="Arkamaya Kusuma — Halaman Profil"
+                    data-modal-category={p.category}
+                    data-modal-desc="Tampilan halaman profil website Arkamaya Kusuma — cerita brand, keunggulan, dan statistik kepuasan tamu."
+                    aria-label="Lihat tampilan halaman profil Arkamaya Kusuma"
+                  >
+                    <img src="/assets/porto/website-arkamaya-kusuma/ss4.png" alt="Tampilan halaman profil website Arkamaya Kusuma: mengapa harus Arkamaya Kusuma dan statistik tamu" loading="lazy" class="h-28 w-full object-cover object-top" />
+                    <span class="block border-t-2 border-[var(--color-ink)] bg-[var(--color-sky)] px-2 py-1.5 text-left text-[0.62rem] font-bold leading-tight">Halaman profil & statistik</span>
+                  </button>
+                </div>
+              </div>
+            )}
+            <div class="mt-auto flex flex-wrap gap-2 pt-5">
               {p.services.map((s) => (
                 <span class="tag">{s}</span>
               ))}
@@ -44,6 +118,56 @@ const featured = projects.slice(0, 3);
           </div>
         </article>
       ))}
+
+      {/* Kartu gabungan Logikaos — Website + Sistem Konveksi */}
+      {webLogikaos && sysLogikaos && (
+        <article
+          class="card card-hover group relative overflow-hidden md:col-span-2 lg:col-span-1"
+          data-reveal="scale"
+          data-water
+          style="--reveal-delay:0.3s"
+        >
+          <span class="absolute left-5 top-4 font-[var(--font-display)] text-5xl font-bold text-[var(--color-ink)]/15 z-[1]" aria-hidden="true">04</span>
+          <div class="grid grid-cols-2 border-b-2 border-[var(--color-ink)]">
+            <button
+              type="button"
+              class="project-img relative block aspect-[4/5] cursor-zoom-in overflow-hidden"
+              data-modal-slug={webLogikaos.slug}
+              data-modal-image={webLogikaos.image}
+              data-modal-title={webLogikaos.title}
+              data-modal-category={webLogikaos.category}
+              data-modal-desc={webLogikaos.description}
+              aria-label={`Lihat gambar ${webLogikaos.title}`}
+            >
+              <img src={webLogikaos.image} alt={webLogikaos.title} loading="lazy" class="h-full w-full object-cover object-top" />
+              <span class="absolute bottom-2 left-2 tag !bg-[var(--color-green)] !text-[0.6rem] z-[1]">Website</span>
+            </button>
+            <button
+              type="button"
+              class="project-img relative block aspect-[4/5] cursor-zoom-in overflow-hidden border-l-2 border-[var(--color-ink)]"
+              data-modal-slug={sysLogikaos.slug}
+              data-modal-image={sysLogikaos.image}
+              data-modal-title={sysLogikaos.title}
+              data-modal-category={sysLogikaos.category}
+              data-modal-desc={sysLogikaos.description}
+              aria-label={`Lihat gambar ${sysLogikaos.title}`}
+            >
+              <img src={sysLogikaos.image} alt={sysLogikaos.title} loading="lazy" class="h-full w-full object-cover object-top" />
+              <span class="absolute bottom-2 left-2 tag !bg-[var(--color-sky)] !text-[0.6rem] z-[1]">Sistem</span>
+            </button>
+          </div>
+          <div class="p-7">
+            <h3 class="display-section text-2xl mb-2.5 group-hover:text-[var(--color-accent)] transition-colors duration-200" data-i18n="combo.title">Logikaos — Website & Sistem Konveksi</h3>
+            <p class="text-sm leading-relaxed text-[var(--color-ink-soft)] line-clamp-2" data-i18n="combo.desc">Paket lengkap untuk brand clothing — website katalog sekaligus sistem konveksi untuk mencatat order dan memantau produksi.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="tag">Website</span>
+              <span class="tag">Web App</span>
+              <span class="tag">Production</span>
+            </div>
+          </div>
+        </article>
+      )}
+
     </div>
   </div>
 </section>

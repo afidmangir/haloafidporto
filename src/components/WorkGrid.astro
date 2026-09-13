@@ -6,22 +6,28 @@ import { projects } from "../data/projects";
   <div class="container-site">
     <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
       <div>
-        <p class="kicker mb-4" data-reveal>Semua project</p>
-        <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
+        <p class="kicker mb-4" data-reveal data-i18n="work.kicker">Semua project</p>
+        <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal data-words="work.h" style="--reveal-delay:0.08s">
           <span class="scrub-mask"><span class="scrub-word">Arsip</span></span>{" "}
           <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">karya.</span></span>
         </h2>
       </div>
-      <span class="tag !bg-[var(--color-yellow)]" data-reveal style="--reveal-delay:0.15s">{projects.length} project 👍</span>
+      <span class="tag !bg-[var(--color-yellow)]" data-reveal style="--reveal-delay:0.15s" data-i18n="work.count" data-count={projects.length}>{projects.length} project 👍</span>
     </div>
 
     <div class="space-y-5">
       {projects.map((p, i) => (
-        <a
-          href="#contact"
-          class="card card-hover group flex items-center gap-5 md:gap-7 p-5 md:p-6"
+        <button
+          type="button"
+          class="card card-hover group flex w-full cursor-zoom-in items-center gap-5 p-5 text-left md:gap-7 md:p-6"
           data-reveal
           data-water
+          data-modal-slug={p.slug}
+          data-modal-image={p.image}
+          data-modal-title={p.title}
+          data-modal-category={p.category}
+          data-modal-desc={p.description}
+          aria-label={`Lihat gambar ${p.title}`}
           style={`--reveal-delay:${Math.min(i * 0.05, 0.2)}s`}
         >
           <span class="hidden md:grid w-14 h-14 shrink-0 place-items-center font-[var(--font-display)] text-xl font-bold bg-white border-2 border-[var(--color-ink)] rounded-xl shadow-[3px_3px_0_0_var(--color-ink)]">
@@ -31,21 +37,22 @@ import { projects } from "../data/projects";
             <img src={p.image} alt={p.title} loading="lazy" class="h-full w-full object-cover" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="display-section text-lg md:text-2xl group-hover:text-[var(--color-accent)] transition-colors duration-200">{p.title}</h3>
-            <p class="mt-1 text-xs md:text-sm font-medium text-[var(--color-ink-soft)] line-clamp-1">{p.category}</p>
+            <h3 class="display-section text-lg md:text-2xl group-hover:text-[var(--color-accent)] transition-colors duration-200" data-proj={p.slug} data-field="title">{p.title}</h3>
+            <p class="mt-1 text-xs md:text-sm font-medium text-[var(--color-ink-soft)] line-clamp-1" data-proj={p.slug} data-field="category">{p.category}</p>
           </div>
           <div class="hidden md:flex gap-2 mr-2">
             {p.services.slice(0, 2).map((s) => <span class="tag">{s}</span>)}
           </div>
           <span class="grid w-11 h-11 shrink-0 place-items-center rounded-xl border-2 border-[var(--color-ink)] bg-white shadow-[3px_3px_0_0_var(--color-ink)] transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[5px_5px_0_0_var(--color-ink)]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
           </span>
-        </a>
+        </button>
       ))}
     </div>
     <p class="mt-8 text-sm font-medium text-[var(--color-muted)]" data-reveal>
-      * Ini sebagian kecil aja. Mau liat yang cocok buat kebutuhanmu?{" "}
-      <a href="#contact" class="link-line font-bold text-[var(--color-accent)]">Ngobrol yuk</a> — nggak ada kewajiban apa-apa.
+      <span data-i18n="work.note1">* Ini sebagian kecil aja. Mau liat yang cocok buat kebutuhanmu? </span>
+      <a href="#contact" class="link-line font-bold text-[var(--color-accent)]" data-i18n="work.noteLink">Ngobrol yuk</a>
+      <span data-i18n="work.note2"> — nggak ada kewajiban apa-apa.</span>
     </p>
   </div>
 </section>

@@ -7,14 +7,13 @@ const year = new Date().getFullYear();
   <div class="container-site py-14">
     <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
       <div>
-        <a href="#top" class="flex items-center gap-2.5 font-[var(--font-display)] text-lg font-bold tracking-tight">
-          <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-yellow)] border-2 border-white text-sm font-bold text-[var(--color-ink)]">h.</span>
-          HaloAfid
+        <a href="#top" class="flex items-center gap-2.5 font-[var(--font-display)] text-lg font-bold tracking-tight" aria-label="HaloAfid — kembali ke atas">
+          <img src="/assets/haloafid-logoldark.png" alt="HaloAfid" class="h-9 w-auto" loading="lazy" />
         </a>
         <p class="mt-2 text-xs font-medium text-white/50">oleh Muhamad Mustafid, S.I.Kom</p>
-        <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/70" data-i18n="foot.desc">
           Personal brand dari Indonesia. Bikin website, sistem informasi, SEO &amp; GEO,
-          dan solusi AI yang cepat, rapi, dan bener-bener kepake.
+          dan Automation yang cepat, rapi, dan bener-bener kepake.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a href={site.whatsapp} target="_blank" rel="noopener" aria-label="WhatsApp" class="grid h-10 w-10 place-items-center rounded-lg border-2 border-white/30 text-white transition-all duration-200 hover:bg-[var(--color-yellow)] hover:border-[var(--color-yellow)] hover:text-[var(--color-ink)]">
@@ -36,7 +35,7 @@ const year = new Date().getFullYear();
       </div>
 
       <div>
-        <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-5">Menu</h4>
+        <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-5" data-i18n="foot.menu">Menu</h4>
         <ul class="space-y-3">
           {nav.map((item) => (
             <li>
@@ -47,7 +46,7 @@ const year = new Date().getFullYear();
       </div>
 
       <div>
-        <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-5">Kontak</h4>
+        <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-5" data-i18n="foot.contact">Kontak</h4>
         <ul class="space-y-3 text-sm">
           <li>
             <a href={`mailto:${site.email}`} class="link-line text-white/80 hover:text-white">{site.email}</a>
@@ -65,14 +64,14 @@ const year = new Date().getFullYear();
           <li>
             <a href={site.threads} target="_blank" rel="noopener" class="link-line text-white/80 hover:text-white">Threads @haloafid</a>
           </li>
-          <li class="text-white/50">Indonesia (UTC+7) 🇮🇩</li>
+          <li class="text-white/50">Indonesia (UTC+7)</li>
         </ul>
       </div>
     </div>
 
     <div class="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-white/20 pt-7 text-xs font-medium text-white/50">
-      <p>© {year} {site.name}. Semua hak dilindungi.</p>
-      <p>Dibuat dengan ☕ dan ketelitian di Mangir, Bantul — Indonesia.</p>
+      <p>© {year} {site.name}. <span data-i18n="foot.rights">Semua hak dilindungi.</span></p>
+      <p data-i18n="foot.made">Dibuat dengan ☕ dan ketelitian di Mangir, Bantul — Indonesia.</p>
     </div>
   </div>
 </footer>

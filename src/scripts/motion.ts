@@ -70,7 +70,7 @@ function applySplitWords(container: HTMLElement) {
   });
 }
 
-/* ======== CUSTOM CURSOR ======== */
+/* ======== CUSTOM CURSOR — outline only, no solid cover ======== */
 function initCursor() {
   if (!finePointer || prefersReduced) return;
   const dot = document.querySelector<HTMLElement>("[data-cursor-dot]");
@@ -79,7 +79,6 @@ function initCursor() {
   const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const ringPos = { ...pos };
   gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
-  // Munculkan cursor hanya setelah mousemove asli (aman utk touchscreen yg lapor fine)
   const live = () => document.body.classList.add("cursor-live");
   window.addEventListener("mousemove", live, { once: true });
   window.addEventListener("mousemove", (e) => {
@@ -87,8 +86,8 @@ function initCursor() {
     gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.08, overwrite: "auto" });
   });
   gsap.ticker.add(() => {
-    ringPos.x += (pos.x - ringPos.x) * 0.16;
-    ringPos.y += (pos.y - ringPos.y) * 0.16;
+    ringPos.x += (pos.x - ringPos.x) * 0.18;
+    ringPos.y += (pos.y - ringPos.y) * 0.18;
     gsap.set(ring, { x: ringPos.x, y: ringPos.y });
   });
   const activate = () => document.body.classList.add("cursor-active");
@@ -331,33 +330,47 @@ function initCounters() {
   });
 }
 
-/* ======== OVERLAP STACK (FULL-SCREEN + LEGACY) ======== */
+/* ======== OVERLAP STACK — FIXED: transparan → makin gelap (bukan terbalik) ======== */
 function initOverlapStack() {
-  // Varian baru: full-screen, warna memenuhi layar
+  // Varian baru: full-screen, warna memenuhi layar — shade opacity 0→0.35 saat overlap
   document.querySelectorAll<HTMLElement>("[data-overlap-full]").forEach((stack) => {
     const cards = Array.from(stack.querySelectorAll<HTMLElement>("[data-overlap-card]"));
     if (cards.length < 2) return;
     cards.forEach((card, i) => {
       if (i === 0) return;
-      // Kartu masuk dari bawah menutupi kartu sebelumnya
       gsap.fromTo(
         card,
-        { yPercent: 8 },
+        { yPercent: 6 },
         {
           yPercent: 0,
           ease: "none",
-          scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true },
+          scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: 1.1 },
         }
       );
-      // Kartu sebelumnya mengecil + meredup saat tertutup
       const prev = cards[i - 1];
-      gsap.to(prev, {
-        scale: 0.92,
-        filter: "brightness(0.8)",
-        transformOrigin: "center top",
-        ease: "none",
-        scrollTrigger: { trigger: card, start: "top bottom", end: "top top+=120", scrub: true },
-      });
+      const shade = prev.querySelector<HTMLElement>("[data-overlap-shade]");
+      if (shade) {
+        // Transparan dulu, makin gelap saat card berikutnya menutupi
+        gsap.fromTo(
+          shade,
+          { opacity: 0 },
+          {
+            opacity: 0.38,
+            ease: "none",
+            scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: 1.1 },
+          }
+        );
+      }
+      // skala halus biar ada depth
+      gsap.fromTo(
+        prev,
+        { scale: 1 },
+        {
+          scale: 0.97,
+          ease: "none",
+          scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: 1.1 },
+        }
+      );
     });
   });
 
@@ -386,19 +399,82 @@ function initOverlapStack() {
   });
 }
 
-/* ======== BIGTEXT PARALLAX ======== */
+/* ======== BIGTEXT — sticky storytelling + scroll timeline ========
+   Wrap 230svh + sticky 100svh: scroll menggerakkan timeline scrub.
+   Urutan: kicker → judul mask-reveal → underline draw → deskripsi → kartu 1-2-3. */
 function initBigText() {
-  if (prefersReduced) return;
-  const section = document.querySelector("[data-bigtext-section]");
-  const lines = document.querySelectorAll<HTMLElement>("[data-big-line]");
-  if (!section || !lines.length) return;
-  lines.forEach((line, i) => {
-    gsap.fromTo(line, { yPercent: -10 + i * 15 }, {
-      yPercent: 10 + i * 15,
-      ease: "none",
-      scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: true },
-    });
+  const section = document.querySelector<HTMLElement>("[data-bigtext-section]");
+  if (!section) return;
+  const wrap = section.closest(".bigtext-sticky-wrap") as HTMLElement | null;
+  const kicker = section.querySelector<HTMLElement>("[data-big-kicker]");
+  const lineIns = section.querySelectorAll<HTMLElement>("[data-big-line-in]");
+  const underline = section.querySelector<HTMLElement>("[data-big-underline]");
+  const desc = section.querySelector<HTMLElement>("[data-big-desc]");
+  const sub = section.querySelector<HTMLElement>("[data-big-sub]");
+  const hint = section.querySelector<HTMLElement>("[data-big-hint]");
+  const hintFill = section.querySelector<HTMLElement>("[data-big-scroll-fill]");
+  const cards = section.querySelectorAll<HTMLElement>("[data-big-card]");
+  const icons = section.querySelectorAll<HTMLElement>("[data-big-card-icon]");
+  const giant = section.querySelector<HTMLElement>("[data-big-giant]");
+  const progress = section.querySelector<HTMLElement>("[data-big-progress]");
+  const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
+  // Tanpa JS-scrub: tampilkan semua (CSS sudah opacity:1 di mobile / no-js)
+  if (prefersReduced || isMobile || !wrap) {
+    [kicker, desc, sub, hint].forEach((el) => { if (el) { el.style.opacity = "1"; el.style.transform = "none"; } });
+    lineIns.forEach((el) => { el.style.transform = "none"; el.style.opacity = "1"; });
+    cards.forEach((c) => { c.style.opacity = "1"; });
+    icons.forEach((ic) => { ic.style.transform = "none"; });
+    if (underline) (underline as unknown as SVGPathElement).style.strokeDashoffset = "0";
+    return;
+  }
+
+  // Siapkan underline draw
+  let ulLen = 300;
+  try {
+    const p = underline as unknown as SVGPathElement | null;
+    if (p && typeof p.getTotalLength === "function") ulLen = p.getTotalLength();
+  } catch { /* abaikan */ }
+  if (underline) {
+    const p = underline as unknown as SVGPathElement;
+    p.style.strokeDasharray = `${ulLen}`;
+    p.style.strokeDashoffset = `${ulLen}`;
+  }
+
+  const tl = gsap.timeline({
+    defaults: { ease: "none" },
+    scrollTrigger: { trigger: wrap, start: "top top", end: "bottom bottom", scrub: 1 },
   });
+
+  // 0.00 — kicker + hint bar
+  if (kicker) tl.fromTo(kicker, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.12 }, 0);
+  // 0.05–0.30 — judul mask reveal per baris
+  lineIns.forEach((el, i) => {
+    tl.fromTo(el, { yPercent: 112, rotateX: 18 }, { yPercent: 0, rotateX: 0, duration: 0.22 }, 0.04 + i * 0.13);
+  });
+  // 0.30 — underline menggambar
+  if (underline) tl.to(underline, { strokeDashoffset: 0, duration: 0.14 } as object, 0.32);
+  // 0.40–0.52 — deskripsi + sub + hint
+  if (desc) tl.fromTo(desc, { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.12 }, 0.42);
+  if (sub) tl.fromTo(sub, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.1 }, 0.5);
+  if (hint) tl.fromTo(hint, { opacity: 0 }, { opacity: 1, duration: 0.08 }, 0.54);
+  // kartu 1-2-3 — pop + rotate + icon spring, satu per satu
+  const baseRot = [-0.6, 0.7, -0.4];
+  cards.forEach((card, i) => {
+    const at = 0.56 + i * 0.13;
+    tl.fromTo(card,
+      { y: 72, opacity: 0, rotation: -3, scale: 0.94, boxShadow: "0px 0px 0 0 var(--color-ink)" },
+      { y: 0, opacity: 1, rotation: baseRot[i % baseRot.length], scale: 1, boxShadow: "5px 5px 0 0 var(--color-ink)", duration: 0.13 },
+      at);
+    const icon = icons[i];
+    if (icon) tl.fromTo(icon, { scale: 0, rotation: -24 }, { scale: 1, rotation: 0, duration: 0.1, ease: "back.out(2)" }, at + 0.03);
+  });
+  // BG raksasa geser + progress penuh selama sticky
+  if (giant) tl.fromTo(giant, { xPercent: 4 }, { xPercent: -22, duration: 1 }, 0);
+  if (progress) tl.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0);
+  if (hintFill) tl.fromTo(hintFill, { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0);
+  // Sedikit zoom-out konten di akhir agar terasa selesai
+  tl.to(section.querySelector(".container-site"), { scale: 0.985, duration: 0.12 }, 0.88);
 }
 
 /* ======== SCRUB HEADING ======== */
@@ -416,17 +492,59 @@ function initScrubHeading() {
   });
 }
 
-/* ======== HORIZONTAL SCROLL (STICKY + VANILLA, TANPA PIN) ========
-   Strip kartu sticky fullscreen; posisi track mengikuti progres vertikal
-   via scroll listener biasa. Tanpa ScrollTrigger-pin sehingga kebal
-   duplikasi/HMR dan tetap jalan berdampingan dengan Lenis. */
+/* ======== HORIZONTAL SCROLL — FIXED (vertical drives horizontal, 1:1) ======== */
 function initHorizontalScroll() {
   document.querySelectorAll<HTMLElement>("[data-h-tall]").forEach((outer) => {
     const sticky = outer.querySelector<HTMLElement>("[data-h-viewport]");
     const track = outer.querySelector<HTMLElement>("[data-h-track]");
+    const bar = outer.querySelector<HTMLElement>("[data-h-progress]");
     if (!sticky || !track) return;
 
     const mq = window.matchMedia("(max-width: 767px)");
+
+    let dist = 0;
+    let ro: ResizeObserver | null = null;
+
+    const measureDist = () => {
+      // pastikan transform reset agar scrollWidth akurat
+      const prev = track.style.transform;
+      track.style.transform = "none";
+      // force layout
+      void track.offsetWidth;
+      let d = track.scrollWidth - sticky.clientWidth;
+      if (d < 12) {
+        // fallback: jumlahkan panel jika scrollWidth gagal (mis. font belum load)
+        const panels = track.querySelectorAll<HTMLElement>("[data-h-panel]");
+        let sum = 0;
+        panels.forEach((p) => { sum += p.offsetWidth + 24; });
+        // padding inline tambahan
+        d = Math.max(0, sum + 32 - sticky.clientWidth);
+      }
+      track.style.transform = prev;
+      return Math.max(0, d);
+    };
+
+    const applyProgress = (p: number) => {
+      if (outer.classList.contains("h-native")) return;
+      const clamped = Math.min(1, Math.max(0, p));
+      const x = -(clamped * dist);
+      track.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
+      if (bar) bar.style.width = `${(clamped * 100).toFixed(2)}%`;
+    };
+
+    // Fallback manual (tanpa ScrollTrigger) — dari posisi outer vs viewport
+    const update = () => {
+      if (outer.classList.contains("h-native")) return;
+      const total = outer.offsetHeight - window.innerHeight;
+      if (total <= 1 || dist <= 1) {
+        track.style.transform = "translate3d(0,0,0)";
+        if (bar) bar.style.width = "0%";
+        return;
+      }
+      const top = outer.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, -top / total));
+      applyProgress(p);
+    };
 
     const layout = () => {
       const native = mq.matches || prefersReduced;
@@ -434,22 +552,15 @@ function initHorizontalScroll() {
       if (native) {
         outer.style.height = "";
         track.style.transform = "";
-        return 0;
+        if (bar) bar.style.width = "0%";
+        dist = 0;
+        return;
       }
-      const dist = Math.max(0, track.scrollWidth - sticky.clientWidth);
-      outer.style.height = `${Math.round(window.innerHeight + dist)}px`;
-      return dist;
-    };
-
-    let dist = layout();
-
-    const update = () => {
-      if (outer.classList.contains("h-native")) return;
-      const total = outer.offsetHeight - window.innerHeight;
-      if (total <= 0 || dist <= 0) return;
-      const top = outer.getBoundingClientRect().top;
-      const p = Math.min(1, Math.max(0, -top / total));
-      track.style.transform = `translate3d(${(-p * dist).toFixed(1)}px, 0, 0)`;
+      dist = measureDist();
+      // tinggi outer = viewport + jarak horizontal (1:1 mapping)
+      const h = Math.max(window.innerHeight + dist, window.innerHeight * 1.1);
+      outer.style.height = `${Math.round(h)}px`;
+      update();
     };
 
     let ticking = false;
@@ -462,74 +573,111 @@ function initHorizontalScroll() {
       });
     };
 
-    // Listener window dipasang sekali (tahan HMR reboot); Lenis dibuat ulang tiap boot.
     if (!outer.dataset.hInit) {
       outer.dataset.hInit = "1";
       window.addEventListener("scroll", requestUpdate, { passive: true });
-      window.addEventListener("resize", () => {
-        dist = layout();
-        requestUpdate();
-      });
-      window.addEventListener("load", () => {
-        dist = layout();
-        update();
-      });
-      if (mq.addEventListener) {
-        mq.addEventListener("change", () => {
-          dist = layout();
-          requestUpdate();
+      window.addEventListener("resize", () => { layout(); requestUpdate(); setTimeout(() => ScrollTrigger.refresh(), 100); });
+      mq.addEventListener?.("change", () => { layout(); requestUpdate(); setTimeout(() => ScrollTrigger.refresh(), 100); });
+      // ResizeObserver untuk track / sticky — recalc saat font / gambar load
+      if (typeof ResizeObserver !== "undefined") {
+        let roTimer: number | undefined;
+        ro = new ResizeObserver(() => {
+          window.clearTimeout(roTimer);
+          roTimer = window.setTimeout(() => { layout(); ScrollTrigger.refresh(); }, 150);
         });
+        ro.observe(track);
+        ro.observe(sticky);
       }
+      // load + double rAF untuk pastikan font & layout siap
+      window.addEventListener("load", () => {
+        requestAnimationFrame(() => requestAnimationFrame(() => { layout(); ScrollTrigger.refresh(); }));
+        setTimeout(() => { layout(); ScrollTrigger.refresh(); }, 300);
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => { layout(); setTimeout(() => ScrollTrigger.refresh(), 50); }));
+      setTimeout(() => { layout(); ScrollTrigger.refresh(); }, 400);
     } else {
-      dist = layout();
+      layout();
     }
     if (lenis) lenis.on("scroll", requestUpdate);
-    update();
+    // ScrollTrigger sebagai penggerak utama — sinkron dengan Lenis via ScrollTrigger.update,
+    // sehingga pin sticky tetap di tengah layar selama outer di-scroll
+    if (!prefersReduced && !mq.matches) {
+      ScrollTrigger.create({
+        trigger: outer,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+        onUpdate: (self) => applyProgress(self.progress),
+      });
+    }
+    requestUpdate();
+    // parallax subtle on cards
+    track.querySelectorAll<HTMLElement>("[data-h-panel]").forEach((panel, idx) => {
+      if (prefersReduced) return;
+      gsap.fromTo(panel, { y: idx % 2 === 0 ? 8 : -6 }, {
+        y: idx % 2 === 0 ? -8 : 6,
+        ease: "none",
+        scrollTrigger: { trigger: outer, start: "top top", end: "bottom bottom", scrub: true },
+      });
+    });
   });
 }
 
-/* ======== HERO SCROLL OUT (GRUP KOMPAK, ANTI-TUMPUK) ========
-   Semua item bergerak BERSAMAAN (tanpa stagger) dan pendek saja,
-   sehingga tombol tak akan terselip di bawah teks saat scroll. */
+/* ======== HERO IN (pasti terlihat) + SCROLL OUT (halus, tidak tumpuk) ======== */
+function initHeroIn() {
+  const hero = document.querySelector<HTMLElement>("#top");
+  if (!hero) return;
+  const items = hero.querySelectorAll<HTMLElement>("[data-hero-reveal]");
+  if (!items.length) return;
+  if (prefersReduced) {
+    items.forEach((el) => el.classList.add("is-in"));
+    return;
+  }
+  // Stagger in on load — agar deskripsi & button tidak hilang
+  requestAnimationFrame(() => {
+    items.forEach((el) => el.classList.add("is-in"));
+  });
+  // Pastikan reveal lain di hero juga visible bila JS aktif
+  hero.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
+    el.classList.add("is-visible");
+  });
+}
+
 function initHeroScroll() {
   const hero = document.querySelector<HTMLElement>("#top");
   if (!hero || prefersReduced) return;
-  const items = [
-    hero.querySelector<HTMLElement>(".flex-wrap.items-center.gap-3.mb-7"),
-    hero.querySelector<HTMLElement>("h1"),
-    hero.querySelector<HTMLElement>('p[data-reveal]'),
-    hero.querySelector<HTMLElement>(".mt-7.flex"),
-    hero.querySelector<HTMLElement>("aside"),
-    hero.querySelector<HTMLElement>(".grid-cols-3"),
-    hero.querySelector<HTMLElement>(".border-y-2"),
-  ].filter(Boolean) as HTMLElement[];
+  const items = hero.querySelectorAll<HTMLElement>("[data-hero-reveal], h1, aside");
   if (!items.length) return;
 
-  // Grup kompak: geser dikit + fade, selesai tepat saat hero habis
+  // Fade + slight lift — rentang panjang supaya tidak tiba-tiba hilang
   gsap.to(items, {
-    y: -32,
+    y: -24,
     opacity: 0,
     ease: "none",
+    stagger: 0.06,
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: "bottom 25%",
-      scrub: true,
+      end: "bottom top",
+      scrub: 1.1,
     },
   });
 
-  // Pattern bg gerak berlawanan (parallax)
+  const blobs = hero.querySelectorAll<HTMLElement>(".hero-bg-blob, .hero-bg-blob-2, .hero-bg-grid");
+  blobs.forEach((b, i) => {
+    gsap.fromTo(b, { yPercent: 0 }, {
+      yPercent: 12 + i * 4,
+      ease: "none",
+      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
+    });
+  });
+
   const pattern = hero.querySelector<HTMLElement>("[data-parallax]");
   if (pattern) {
     gsap.fromTo(pattern, { yPercent: 0 }, {
-      yPercent: 18,
+      yPercent: 16,
       ease: "none",
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
+      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
     });
   }
 }
@@ -764,8 +912,6 @@ function initMobileMenu() {
 
 /* ======== BOOT ======== */
 function boot() {
-  // Idempoten: bersihkan sisa boot sebelumnya (penting untuk HMR dev-server
-  // agar ScrollTrigger/Lenis tidak menumpuk dan saling melawan).
   ScrollTrigger.getAll().forEach((t) => t.kill());
   if (lenis) {
     lenis.destroy();
@@ -777,7 +923,9 @@ function boot() {
   initMobileMenu();
   initSplitText();
   initLineGrow();
-  initHorizontalScroll(); // atur sendiri mode reduced/mobile → selalu dipanggil
+  initHorizontalScroll();
+  initHeroIn();
+  initBigText();
 
   if (prefersReduced) {
     ScrollTrigger.refresh();
@@ -797,11 +945,9 @@ function boot() {
   initMarqueeVelocity();
   initScrubHeading();
   initHeroScroll();
-  initBigText();
   initOverlapStack();
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
-  // Refresh ulang setelah gambar/font selesai agar sticky presisi
   window.addEventListener("load", () => ScrollTrigger.refresh());
 }
 

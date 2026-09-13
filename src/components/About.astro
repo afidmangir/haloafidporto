@@ -1,81 +1,46 @@
 ---
 const principles = [
-  {
-    num: "01",
-    title: "Santai, bukan asal",
-    desc: "Ngobrolnya santai, tapi outputnya serius dan rapi. Nggak ada setengah-setengah.",
-  },
-  {
-    num: "02",
-    title: "Fokus ke hasil",
-    desc: "Bukan cuma cantik. Website harus bantu bisnismu — dapat leads, pesanan, kepercayaan.",
-  },
-  {
-    num: "03",
-    title: "Cepat itu wajib",
-    desc: "Nggak ada yang sabar buka website lemot. Performa sudah jadi harga mati dari awal.",
-  },
-  {
-    num: "04",
-    title: "Jujur & jelas",
-    desc: "Progress di-update, biaya transparan, tenggat realistis. Nggak ada janji muluk.",
-  },
+  { num: "01", title: "Praktis", desc: "Santai ngobrol, hasil rapi. No setengah-setengah." },
+  { num: "02", title: "Hasil", desc: "Cantik saja tak cukup — harus bawa leads & order." },
+  { num: "03", title: "Cepat", desc: "No lemot. Performa prioritas dari hari pertama." },
+  { num: "04", title: "Jelas", desc: "Update rutin, biaya terang, tenggat realistis." },
 ];
 const colors = ["!bg-[var(--color-yellow)]", "!bg-[var(--color-green)]", "!bg-[var(--color-pink)]", "!bg-[var(--color-sky)]"];
 ---
 
-<section id="about" class="py-24 md:py-32 pb-0 md:pb-0">
+<section id="about" class="py-16 md:py-20">
   <div class="container-site">
-    <p class="kicker mb-4" data-reveal>Kenapa milih saya</p>
-    <h2 class="display-section text-4xl md:text-5xl" data-scrub data-reveal style="--reveal-delay:0.08s">
-      <span class="scrub-mask"><span class="scrub-word">Bisnis</span></span>{" "}
-      <span class="scrub-mask"><span class="scrub-word">kamu,</span></span>{" "}
-      <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">prioritas</span></span>{" "}
-      <span class="scrub-mask"><span class="scrub-word">utama.</span></span>
-    </h2>
-    <div class="mt-6 max-w-xl">
-      <p class="text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.12s">
-        Fokusnya satu: <strong>bantu bisnismu tumbuh</strong> lewat digital.
-        Dari website toko, profil desa, sampai sistem kasir — dikerjakan
-        tuntas, dengan komunikasi langsung dari yang ngerjain.
-      </p>
-      <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.16s">
-        Nggak ada subkon, nggak ada lempar-lemparan. Progress selalu di-update,
-        biaya transparan, tenggat realistis. Kamu fokus jualan, sisanya saya urus.
+    <div class="max-w-3xl">
+      <p class="kicker mb-3" data-reveal data-i18n="about.kicker">Kenapa saya</p>
+      <h2 class="display-section text-[2rem] md:text-[2.6rem] leading-none" data-scrub data-reveal data-words="about.h" style="--reveal-delay:0.06s">
+        <span class="scrub-mask"><span class="scrub-word">Bisnis</span></span>{" "}
+        <span class="scrub-mask"><span class="scrub-word">kamu</span></span>{" "}
+        <span class="scrub-mask"><span class="scrub-word text-[var(--color-accent)]">prioritas.</span></span>
+      </h2>
+      <p class="mt-4 max-w-[60ch] text-[1.02rem] leading-relaxed text-[var(--color-ink-soft)]" data-reveal style="--reveal-delay:0.1s">
+        <span data-i18n="about.intro1">Website, toko online, sampai sistem kasir — </span><strong data-i18n="about.intro2">langsung sama yang ngerjain.</strong><span data-i18n="about.intro3"> Update jelas, biaya transparan, kamu fokus jualan.</span>
       </p>
     </div>
   </div>
 
-  <!-- STICKY OVERLAP FULL-SCREEN: warna memenuhi layar -->
-  <div class="mt-16 overlap-stack-full" data-overlap-full>
+  <!-- Prinsip — versi ringkas: sticky kompak (bukan 100vh) -->
+  <div class="mt-10 overlap-stack-compact" data-overlap-full>
     {principles.map((p, i) => (
-      <div
-        class={`overlap-full ${colors[i]}`}
-        data-overlap-card
-        style={`z-index:${10 + i};`}
-      >
-        <div class="overlap-full-inner">
-          <div class="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-start">
-            <div>
-              <span class="display-hero text-7xl md:text-8xl">{p.num}</span>
-              <span class="tag !bg-white mt-4">Prinsip</span>
+      <div class={`overlap-compact ${colors[i]}`} data-overlap-card style={`z-index:${10 + i};`}>
+        <div class="overlap-shade" data-overlap-shade aria-hidden="true"></div>
+        <div class="overlap-compact-inner">
+          <div class="flex gap-5 md:gap-8 items-start">
+            <div class="shrink-0 text-center">
+              <span class="display-hero block text-5xl md:text-6xl leading-none">{p.num}</span>
+              <span class="tag !bg-white mt-2 !px-2 !py-1 !text-[0.6rem]" data-i18n="about.principleBadge">Prinsip</span>
             </div>
-            <div class="md:pt-3">
-              <h3 class="display-section text-3xl md:text-5xl mb-4">{p.title}</h3>
-              <p class="text-lg md:text-xl leading-relaxed text-[var(--color-ink-soft)] max-w-xl">{p.desc}</p>
-              {i === 0 && (
-                <div class="mt-6 flex items-center gap-3 text-sm font-bold text-[var(--color-ink-soft)]">
-                  <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white border-2 border-[var(--color-ink)] shadow-[2px_2px_0_0_var(--color-ink)]">☕</span>
-                  Ngopi dulu? Boleh banget!
-                </div>
-              )}
+            <div class="min-w-0 pt-1">
+              <h3 class="display-section text-xl md:text-2xl" data-i18n={`about.p${i+1}Title`}>{p.title}</h3>
+              <p class="mt-2 text-sm md:text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]" data-i18n={`about.p${i+1}Desc`}>{p.desc}</p>
             </div>
+            <span class="ml-auto hidden md:block font-[var(--font-display)] text-7xl font-bold leading-none text-[var(--color-ink)]/10 select-none" aria-hidden="true">{p.num}</span>
           </div>
         </div>
-        <!-- Decorative corner -->
-        <span class="absolute right-4 bottom-2 font-[var(--font-display)] text-[10rem] md:text-[14rem] font-bold leading-none text-[var(--color-ink)]/[0.05] select-none pointer-events-none" aria-hidden="true">
-          {p.num}
-        </span>
       </div>
     ))}
   </div>

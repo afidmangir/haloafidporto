@@ -1,0 +1,139 @@
+---
+---
+
+<div class="lang-switcher relative">
+  <button
+    type="button"
+    class="lang-toggle inline-flex items-center gap-1.5 rounded-lg border-2 border-[var(--color-ink)] bg-white px-3 py-2 text-xs font-bold shadow-[2.5px_2.5px_0_0_var(--color-ink)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3.5px_3.5px_0_0_var(--color-ink)]"
+    aria-label="Ganti bahasa / Change language"
+    aria-expanded="false"
+  >
+    <span class="lang-flag-id inline-flex overflow-hidden rounded-[3px] border border-[var(--color-ink)]/30" aria-hidden="true">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect width="18" height="6" fill="#e70011"/><rect y="6" width="18" height="6" fill="#ffffff"/></svg>
+    </span>
+    <span class="lang-flag-en hidden overflow-hidden rounded-[3px] border border-[var(--color-ink)]/30" aria-hidden="true">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect width="18" height="12" fill="#012169"/><path d="M0 0l18 12M18 0L0 12" stroke="#ffffff" stroke-width="2.4"/><path d="M0 0l18 12M18 0L0 12" stroke="#C8102E" stroke-width="0.8"/><path d="M9 0v12M0 6h18" stroke="#ffffff" stroke-width="4"/><path d="M9 0v12M0 6h18" stroke="#C8102E" stroke-width="2.4"/></svg>
+    </span>
+    <span class="lang-label">ID</span>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+  <div
+    class="lang-menu absolute right-0 top-full z-50 mt-2 hidden w-40 rounded-xl border-2 border-[var(--color-ink)] bg-white p-1 shadow-[4px_4px_0_0_var(--color-ink)]"
+    role="menu"
+  >
+    <button type="button" data-lang="id" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-bold hover:bg-[var(--color-yellow)]" role="menuitem">
+      <span class="inline-flex overflow-hidden rounded-[3px] border border-[var(--color-ink)]/30" aria-hidden="true">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect width="18" height="6" fill="#e70011"/><rect y="6" width="18" height="6" fill="#ffffff"/></svg>
+      </span>
+      Indonesia
+    </button>
+    <button type="button" data-lang="en" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-bold hover:bg-[var(--color-yellow)]" role="menuitem">
+      <span class="inline-flex overflow-hidden rounded-[3px] border border-[var(--color-ink)]/30" aria-hidden="true">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect width="18" height="12" fill="#012169"/><path d="M0 0l18 12M18 0L0 12" stroke="#ffffff" stroke-width="2.4"/><path d="M0 0l18 12M18 0L0 12" stroke="#C8102E" stroke-width="0.8"/><path d="M9 0v12M0 6h18" stroke="#ffffff" stroke-width="4"/><path d="M9 0v12M0 6h18" stroke="#C8102E" stroke-width="2.4"/></svg>
+      </span>
+      English
+    </button>
+  </div>
+</div>
+
+<script>
+  import { dict, projEn } from "../data/i18n";
+
+  const LS_KEY = "haloafid-lang";
+  const getLang = () => (localStorage.getItem(LS_KEY) === "en" ? "en" : "id");
+
+  function setText(el, val) {
+    if (el == null || val == null) return;
+    if (el.dataset.count !== undefined) val = String(val).replace("{n}", el.dataset.count);
+    const hasSvg = el.querySelector("svg");
+    if (hasSvg && el.childNodes.length > 1) {
+      const tn = Array.from(el.childNodes).reverse().find((n) => n.nodeType === 3 && n.textContent.trim());
+      if (tn) {
+        tn.textContent = " " + String(val).replace(/^[^a-zA-Z0-9{]+/, "").trim();
+        return;
+      }
+    }
+    el.textContent = val;
+  }
+
+  function applyLang(lang) {
+    const d = dict[lang] || {};
+    document.documentElement.lang = lang;
+    window.__haloafidLang = lang;
+    // Teks statis
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const k = el.getAttribute("data-i18n");
+      if (k && d[k] !== undefined) setText(el, d[k]);
+    });
+    // Heading scrub: tukar per kata (jumlah kata ID/EN disamakan)
+    document.querySelectorAll("[data-words]").forEach((el) => {
+      const prefix = el.getAttribute("data-words");
+      el.querySelectorAll(".scrub-word").forEach((w, i) => {
+        const v = d[`${prefix}.${i + 1}`];
+        if (v !== undefined) w.textContent = v;
+      });
+    });
+    // Data project (overlay EN, default ID dari markup)
+    document.querySelectorAll("[data-proj]").forEach((el) => {
+      const slug = el.getAttribute("data-proj");
+      const field = el.getAttribute("data-field");
+      if (el.dataset.origId === undefined) el.dataset.origId = el.textContent;
+      const en = slug && field ? projEn[slug]?.[field] : undefined;
+      el.textContent = lang === "en" && en ? en : el.dataset.origId;
+    });
+    // Update semua instance switcher
+    document.querySelectorAll(".lang-switcher").forEach((root) => {
+      const label = root.querySelector(".lang-label");
+      if (label) label.textContent = lang.toUpperCase();
+      root.querySelector(".lang-flag-id")?.classList.toggle("hidden", lang !== "id");
+      root.querySelector(".lang-flag-en")?.classList.toggle("hidden", lang !== "en");
+      root.querySelectorAll("[data-lang]").forEach((b) => {
+        b.classList.toggle("!bg-[var(--color-yellow)]", b.getAttribute("data-lang") === lang);
+      });
+    });
+    try {
+      localStorage.setItem(LS_KEY, lang);
+    } catch { /* abaikan */ }
+    window.dispatchEvent(new CustomEvent("haloafid:lang", { detail: { lang } }));
+  }
+
+  function initScope() {
+    document.querySelectorAll(".lang-switcher").forEach((root) => {
+      if (root.dataset.init) return;
+      root.dataset.init = "1";
+      const toggle = root.querySelector(".lang-toggle");
+      const menu = root.querySelector(".lang-menu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const willOpen = menu.classList.contains("hidden");
+        document.querySelectorAll(".lang-menu").forEach((m) => m.classList.add("hidden"));
+        document.querySelectorAll(".lang-toggle").forEach((t) => t.setAttribute("aria-expanded", "false"));
+        if (willOpen) {
+          menu.classList.remove("hidden");
+          toggle.setAttribute("aria-expanded", "true");
+        }
+      });
+      menu.querySelectorAll("[data-lang]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          applyLang(btn.getAttribute("data-lang") === "en" ? "en" : "id");
+          menu.classList.add("hidden");
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+    });
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".lang-switcher")) {
+        document.querySelectorAll(".lang-menu").forEach((m) => m.classList.add("hidden"));
+      }
+    });
+  }
+
+  window.__haloafidApplyLang = applyLang;
+  initScope();
+  applyLang(getLang());
+  document.addEventListener("astro:page-load", () => {
+    initScope();
+    applyLang(getLang());
+  });
+</script>
